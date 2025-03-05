@@ -26,7 +26,6 @@ app.use(cookieParser())
 // /api/session/:sessionID/cau_hoi => gửi một câu hỏi một cách ngẫu nhiên trả về đúng hoặc sai
 // /api/session/:sessionID/tra_loi => trả lời câu hỏi
 
-
 app.listen(PORT, (err) => {
     console.log('server is runing at port ' + PORT);
-})
+});
