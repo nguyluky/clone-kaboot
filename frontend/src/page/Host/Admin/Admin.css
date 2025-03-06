@@ -1,0 +1,20 @@
+.admin-container {
+    height: 100%;
+    background: #e0e0e0;
+    display: grid;
+    grid-template-columns: 200px 1fr;
+}
+
+.admin-container .admin-side-bar {
+    background: #fff;
+    padding: 20px;
+    grid-column: 1;
+    height: 100%;
+    overflow-y: auto;
+
+}
+
+.admin-container .admin-content {
+    max-height: 100dvh;
+    overflow-y: auto;
+}

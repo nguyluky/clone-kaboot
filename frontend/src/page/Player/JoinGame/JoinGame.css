@@ -1,0 +1,32 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Sigmar&display=swap');
+
+.JoinGame {
+    height: 100%;
+    background-image: linear-gradient(to right top, #550000, #8a3506, #b66b00, #d5a900, #e2eb12);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.wrapper-join-game h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 3rem;
+    font-family: "Sigmar", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    color: #efefef;
+}
+.loading {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}

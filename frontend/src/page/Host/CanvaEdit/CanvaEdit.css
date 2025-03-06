@@ -1,0 +1,125 @@
+.CanvaEdit {
+    padding: 10px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.CanvaEdit-title {
+    align-self: flex-start;
+    margin-left: 40px;
+}
+
+.CanvaEdit-info {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.CanvaEdit-cau-hoi {
+    width: 100%;
+    max-width: 800px;
+}
+
+.CanvaEdit-cau-hoi-item {
+    position: relative;
+    margin-bottom: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.CanvaEdit-cau-hoi-item-info {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.CanvaEdit-cau-hoi-item-info {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.CanvaEdit-cau-hoi-item-info .CanvaEdit-cau-hoi-item-info-title {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.CanvaEdit-cau-hoi-item-info .CanvaEdit-cau-hoi-item-info-title h3 {
+    background-color: #fff;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1.2rem;
+}
+
+.CanvaEdit-cau-hoi-item-info .CanvaEdit-cau-hoi-item-info-title p {
+    margin-left: 10px;
+    background-color: #fff;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    font-size: 1.2rem;
+    border-radius: 8px
+}
+
+.CanvaEdit-cau-hoi-tiem-thoi-gian {
+    background: transparent;
+    border: none;
+    width: 30px;
+    font-size: 1.2rem;
+}
+
+.CanvaEdit-cau-hoi-item-info span {
+    position: absolute;
+    
+    top: -10px;
+    right: -10px;
+    display: flex;
+    gap: 10px;
+}
+
+.CanvaEdit-cau-hoi-item-noi-dung {
+    margin-bottom: 20px;
+    min-height: 50px;
+}
+
+.CanvaEdit-cau-hoi-item-lua-chon {
+    display: grid;
+    gap: 10px;
+}
+
+.CanvaEdit-cau-hoi-item-lua-chon-item {
+    position: relative;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    margin-bottom: 10px;
+}
+
+.CanvaEdit-cau-hoi-item-lua-chon-item input[type="checkbox"] {
+    position: absolute;
+    top: -5px;
+    left: -9px;
+}
+
+.CanvaEdit-cau-hoi-add {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.CanvaEdit-cau-hoi-item-lua-chon-add {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    background-color: #fff;
+    padding: 10px 0;
+    border: #ccc 1px solid;
+    border-radius: 8px;
+    cursor: pointer;
+}

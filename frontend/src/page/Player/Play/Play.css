@@ -1,0 +1,118 @@
+.Play {
+    height: 100%;
+    display: grid;
+    background-image: linear-gradient(to right bottom, #051937, #002768, #203098, #572fc5, #9612eb);
+    grid-template-rows: 60px 1fr;
+}
+.Play-leader-board {
+
+    background-image: linear-gradient(to right bottom, #051937, #002768, #203098, #572fc5, #9612eb);
+    height: 100%;
+}
+
+.Play .play-footer {
+    grid-row: 1;
+    background: #232323;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #efefef;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 0 20px;
+}
+
+.Play .play-container {
+    grid-row: 2;
+}
+
+.Play .play-footer-left span + span {
+    margin-left: 10px;
+}
+
+.question-wrapper {
+    height: 100%;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+}
+
+.question-wrapper .question {
+    background-color: #efefeff8;
+    margin: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.question-wrapper .answers {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    margin: 0px 20px 20px;
+    gap: 10px;
+}
+
+.question-wrapper .answer {
+    box-shadow: 0 0 5px #232323;
+    border-radius: 10px;
+    padding: 5px;
+    color: #232323;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.question-wrapper .answer:hover {
+    transform: scale(0.99);
+}
+
+.question-wrapper .answer input[type=radio] {
+    display: none;
+}
+
+@media only screen and (max-width: 600px) {
+
+    .question-wrapper {
+        grid-template-rows: 1fr auto;
+    }
+
+    .question-wrapper .answers {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(1fr, 4);
+    }
+    .question-wrapper .answer {
+        min-height: 70px;
+    }
+}
+
+.Result {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.Result.correct {
+    background-color: rgba(0, 128, 0, 0.8); /* Green background for correct answers */
+}
+
+.Result.incorrect {
+    background-color: rgba(255, 0, 0, 0.8); /* Red background for incorrect answers */
+}
+
+.Result__content {
+    text-align: center;
+}
+
+.leaderboard__player__info.you {
+    background-color: #f0f0f0;
+    color: #232323;
+}

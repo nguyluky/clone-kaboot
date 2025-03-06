@@ -1,0 +1,50 @@
+
+.list-all-canva {
+    padding: 10px 40px;
+    display: grid;
+}
+
+.list-cart .cart {
+    display: grid;
+    grid-template-columns: 50px 1fr 200px;
+    grid-gap: 20px;
+    border-radius: 5px;
+    background-color: #fff;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.list-all-canva .list-cart {
+  display: grid;
+  grid-gap: 20px;
+}
+
+.cart .cart-action {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.cart.cart-add{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn {
+    background: #efefef;
+    color: #323232;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn.btn-danger {
+    background: #ff0000;
+    color: #fff;
+}
