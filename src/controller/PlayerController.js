@@ -57,10 +57,6 @@ class PlayerController {
         name,
         email,
         std,
-        point,
-        thoi_gian_lam_bai,
-        thoi_gian_voa,
-        bai_lam,
       } = req.body;
       const player = await createPlayer({
         uuid,
@@ -68,14 +64,14 @@ class PlayerController {
         name,
         email,
         std,
-        point,
-        thoi_gian_lam_bai,
-        thoi_gian_voa,
-        bai_lam,
+        point: 0,
+        thoi_gian_lam_bai: null,
+        thoi_gian_voa: new Date(),
+        bai_lam: [],
       });
       res.status(HTTP_STATUS.CREATED).json(player);
     } catch (err) {
-      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: 'Error creating player' });
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: String(err) });
     }
   }
 

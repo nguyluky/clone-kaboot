@@ -15,14 +15,14 @@ export const findByCanvaId = async (canvaId) => {
   return rows;
 };
 
-export const createSession = async () => {
-  const newSession = {
+export const createSession = async (data) => {
+  const {
     title,
     code_join,
     canva_id,
     thoi_gian_bat_dau,
     trang_thai,
-  };
+  } = data;
   const [result] = await pool.query(
     'INSERT INTO session (title, code_join, canva_id, thoi_gian_bat_dau, trang_thai) VALUES (?, ?, ?, ?, ?)',
     [title, code_join, canva_id, thoi_gian_bat_dau, trang_thai]
@@ -43,3 +43,18 @@ export const deleteSession = async (sessionId) => {
   const [result] = await pool.query('DELETE FROM session WHERE session_id = ?', [sessionId]);
   return result;
 };
+
+export const getPlayerBySessionId = async (sessionId) => {
+  const [rows] = await pool.query('SELECT * FROM player WHERE session_id = ?', [sessionId]);
+  return rows;
+}
+
+export const getLeaderBoard = async (sessionId) => {
+  const [rows] = await pool.query('SELECT * FROM player WHERE session_id = ? ORDER BY point DESC', [sessionId]);
+  return rows;
+}
+
+export const getSessionByCodeJoin = async (codeJoin) => {
+  const [rows] = await pool.query('SELECT * FROM session WHERE code_join = ?', [codeJoin]);
+  return rows[0] || null;
+}

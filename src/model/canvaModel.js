@@ -2,7 +2,7 @@
 import pool from '../config/database.js';
 
 export const findAll = async () => {
-  const [rows] = await pool.query('SELECT * FROM canva');
+  const [rows] = await pool.query('SELECT C.`canva_id`, C.`tieu_de`, C.`ngay_tao`, (SELECT COUNT(*) FROM `cau_hoi` CH WHERE CH.`canva_id` = C.`canva_id`) AS `so_cau_hoi`, (SELECT COUNT(*) FROM `session` S WHERE S.`canva_id` = C.`canva_id`) AS `so_session` FROM canva C; ');
   return rows;
 };
 
@@ -23,8 +23,8 @@ export const createCanva = async (newCava) => {
 export const updateCanva = async (canvaId, newCanva) => {
   const { tieu_de, ngay_tao } = newCanva;
   const [result] = await pool.query(
-    'UPDATE canva SET tieu_de = ?, ngay_tao = ? WHERE canva_id = ?',
-    [tieu_de, ngay_tao, canvaId]
+    'UPDATE canva SET tieu_de = ? WHERE canva_id = ?',
+    [tieu_de, canvaId]
   );
   return result;
 };

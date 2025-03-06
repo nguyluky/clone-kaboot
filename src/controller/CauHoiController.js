@@ -6,6 +6,9 @@ import {
   createCauHoi,
   updateCauHoi,
   deleteCauHoi,
+  updateLuaChon,
+  addLuaChon,
+  deleteLuaChon
 } from '../model/CauHoiModel.js';
 import HTTP_STATUS from '../constants/httpStatus.js';
 
@@ -69,7 +72,7 @@ class CauHoiController {
       }
       res.status(HTTP_STATUS.NO_CONTENT).json({ message: 'Question updated successfully' });
     } catch (err) {
-      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: err.message });
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: String(err) });
     }
   }
 
@@ -85,6 +88,40 @@ class CauHoiController {
       res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: 'Error deleting question' });
     }
   }
-}
 
+  async updateLuaChon(req, res) {
+    try {
+      const { lua_chon_id } = req.params;
+      const result = await updateLuaChon(lua_chon_id, req.body);
+      if (result.affectedRows === 0) {
+        return res.status(HTTP_STATUS.NOT_FOUND).json({ message: 'Question not found' });
+      }
+      res.status(HTTP_STATUS.NO_CONTENT).json({ message: 'Question updated successfully' });
+    } catch (err) {
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: String(err) });
+    }
+  }
+
+  async addLuaChon(req, res) {
+    try {
+      const { cau_hoi_id, noi_dung, dung } = req.body;
+      const result = await addLuaChon({ cau_hoi_id, noi_dung, dung });
+      res.status(HTTP_STATUS.CREATED).json(result);
+    } catch (err) {
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: 'Error creating choice' });
+    }
+  }
+  async deleteLuaChon(req, res) {
+    try {
+      const { lua_chon_id } = req.params;
+      const result = await deleteLuaChon(lua_chon_id);
+      if (result.affectedRows === 0) {
+        return res.status(HTTP_STATUS.NOT_FOUND).json({ message: 'Choice not found' });
+      }
+      res.status(HTTP_STATUS.NO_CONTENT).json({ message: 'Choice deleted successfully' });
+    } catch (err) {
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: 'Error deleting choice' });
+    }
+  }
+}
 export default new CauHoiController();

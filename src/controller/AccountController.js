@@ -8,6 +8,7 @@ import {
 } from '../model/AccountModel.js';
 import bcrypt from 'bcrypt';
 import HTTP_STATUS from '../constants/httpStatus.js';
+import jwtUtils from '../utils/auth.js'
 
 class AccountController {
   async getAllAccounts(req, res) {

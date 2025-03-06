@@ -15,24 +15,24 @@ export const findBySessionId = async (sessionId) => {
   return rows;
 };
 
-export const createPlayer = async () => {
-  const newPlayer = {
+export const createPlayer = async (newPlayer) => {
+  const  {
     uuid,
     session_id,
-    Name,
+    name,
     email,
     std,
     point,
     thoi_gian_lam_bai,
     thoi_gian_voa,
     bai_lam,
-  };
+  } = newPlayer;
   const [result] = await pool.query(
     'INSERT INTO player (uuid, session_id, name, email, std, point, thoi_gian_lam_bai, thoi_gian_voa, bai_lam) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
     [
       uuid,
       session_id,
-      Name,
+      name,
       email,
       std,
       point,
@@ -44,22 +44,22 @@ export const createPlayer = async () => {
   return { uuid, session_id, name, email, std, point, thoi_gian_lam_bai, thoi_gian_voa, bai_lam };
 };
 
-export const updatePlayer = async (uuid) => {
-  const player = {
+export const updatePlayer = async (uuid, player) => {
+  const {
     session_id,
-    Name,
+    name,
     email,
     std,
     point,
     thoi_gian_lam_bai,
     thoi_gian_voa,
     bai_lam,
-  };
+  } = player;
   const [result] = await pool.query(
     'UPDATE player SET session_id = ?, name = ?, email = ?, std = ?, point = ?, thoi_gian_lam_bai = ?, thoi_gian_voa = ?, bai_lam = ? WHERE uuid = ?',
     [
       session_id,
-      Name,
+      name,
       email,
       std,
       point,

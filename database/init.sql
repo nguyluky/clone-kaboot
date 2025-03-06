@@ -59,8 +59,8 @@ CREATE TABLE `player` (
     `email` VARCHAR(300) NOT NULL,
     `std` VARCHAR(12) NOT NULL,
     `point` INT NOT NULL DEFAULT 0,
-    `thoi_gian_lam_bai` INT NOT NULL,
-    `thoi_gian_voa` INT NOT NULL,
+    `thoi_gian_lam_bai` INT DEFAULT NULL,
+    `thoi_gian_voa` DATETIME NOT NULL,
     `bai_lam` JSON NOT NULL,
     FOREIGN KEY (`session_id`) REFERENCES `session` (`session_id`) ON DELETE CASCADE
 );

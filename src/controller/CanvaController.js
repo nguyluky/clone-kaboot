@@ -27,11 +27,12 @@ class CanvaController {
 
   async createCanva(req, res) {
     try {
-      const { tieu_de, ngay_tao } = req.body;
+      const { tieu_de} = req.body;
+      const ngay_tao = new Date();
       const canva = await createCanva({ tieu_de, ngay_tao });
       res.status(HTTP_STATUS.CREATED).json(canva);
     } catch (err) {
-      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: 'Error creating canva' });
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: String(err) });
     }
   }
 
