@@ -1,0 +1,26 @@
+services:
+  reactjs:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:3030
+
+  nodejs:
+    build: ./backend
+    ports:
+      - "3030:3030"
+    environment:
+      - PORT=3030
+      - DB_HOST=172.17.0.0/16
+      - DB_USER=root
+      - DB_PASSWORD=123456
+      - DB_NAME=clone_kaboot
+      - DB_PORT=3306
+      - JWT_SECRET=secret
+      - JWT_EXPIRES_IN=90d
+      - REFRESH_TOKEN_EXPIRES=365d
+      - REFRESH_TOKEN_SECRET=refresh
+
+
+
