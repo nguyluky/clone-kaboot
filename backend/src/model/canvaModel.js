@@ -33,3 +33,8 @@ export const deleteCanva = async (canvaId) => {
   const [result] = await pool.query('DELETE FROM canva WHERE canva_id = ?', [canvaId]);
   return result;
 };
+
+export const findAllSessionByCanvaId = async (canvaId) => {
+  const [rows] = await pool.query('SELECT * FROM session WHERE canva_id = ?', [canvaId]);
+  return rows;
+}

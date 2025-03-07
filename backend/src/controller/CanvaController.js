@@ -1,5 +1,5 @@
 // src/controller/CanvaController.js
-import { findAll, findById, createCanva, updateCanva, deleteCanva } from '../model/canvaModel.js';
+import { findAll, findById, createCanva, updateCanva, deleteCanva , findAllSessionByCanvaId} from '../model/canvaModel.js';
 import HTTP_STATUS from '../constants/httpStatus.js';
 
 class CanvaController {
@@ -60,6 +60,17 @@ class CanvaController {
       res.status(HTTP_STATUS.NO_CONTENT).json({ message: 'Canva deleted successfully' });
     } catch (err) {
       res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: 'Error deleting canva' });
+    }
+  }
+
+  async getAllSessionByCanvaId(req, res) {
+    try {
+      const { canva_id } = req.params;
+      console.log(canva_id);
+      const sessions = await findAllSessionByCanvaId(canva_id);
+      res.status(HTTP_STATUS.OK).json(sessions);
+    } catch (err) {
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: 'Error fetching sessions' });
     }
   }
 }

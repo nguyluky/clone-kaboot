@@ -2,7 +2,7 @@
 FROM node:22-alpine as build-stage
 WORKDIR /app
 COPY . .
-RUN npm install
+RUN yarn install
 
 
 CMD ["npm", "start"]

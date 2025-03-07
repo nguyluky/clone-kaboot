@@ -126,6 +126,13 @@ export default function ListAllCanva() {
                                 <button className="btn" onClick={(e) => {
                                     e.preventDefault()
                                     e.stopPropagation()
+                                    nav('/admin/session/' + item.canva_id)
+                                }}>
+                                    xem kết quả
+                                </button>
+                                <button className="btn" onClick={(e) => {
+                                    e.preventDefault()
+                                    e.stopPropagation()
                                     handleCreateSession(item.canva_id)
                                 }}>Tạo bài thi</button>
                                 <button className="btn btn-danger" onClick={e => {

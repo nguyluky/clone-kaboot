@@ -269,11 +269,7 @@ export default function Host() {
 
     return (
         <div className="host">
-            {session?.thoi_gian_bat_dau ?
-                <LeaderBoard players={players} clock={session.thoi_gian_bat_dau} thoi_gian_lam_bai={session.thoi_gian_lam_bai} handleEndGame={handleEndGame} /> :
                 <WaitingRoom rootID={session?.code_join} players={players} onStartGame={handleStartGame} />
-            }
-            {/* <LeaderBoard players={players}/> */}
         </div>
     )
 }
