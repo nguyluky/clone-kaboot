@@ -19,6 +19,7 @@ class CauHoiController {
       res.status(HTTP_STATUS.OK).json(cauHois);
     } catch (err) {
       res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: 'Error fetching questions' });
+      console.log(err);
     }
   }
 
