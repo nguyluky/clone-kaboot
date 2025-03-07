@@ -34,7 +34,7 @@ function LeaderBoard() {
  * }} param0 
  * @returns 
  */
-function Question({ question, onAnswer }) {
+function Question({ question, onAnswer, answer }) {
     const colors = [
         "#FFEB3B",
         "#FF9800",
@@ -52,12 +52,12 @@ function Question({ question, onAnswer }) {
                 <MDEditor.Markdown source={question?.noi_dung} style={{ backgroundColor: "transparent", fontSize: "1.3rem", fontFamily: "Roboto", whiteSpace: 'pre-wrap', maxWidth: '100%' }} />
             </div>
             <div className='answers'>
-                {answers?.map((answer, index) => (
-                    <div key={index} className='answer' style={{
-                        backgroundColor: colors[index]
-                    }} onClick={() => onAnswer(answer)}>
-                        <input type='radio' name='answer' value={answer} />
-                        <MDEditor.Markdown source={answer.noi_dung} style={{ backgroundColor: "transparent", fontSize: "1.3rem", fontFamily: "Roboto", whiteSpace: 'pre-wrap', maxWidth: '100%' }} />
+                {answers?.map((a, index) => (
+                    <div key={index} className={'answer' + (a.lua_chon_id == answer?.lua_chon_id ? ' sele' : '')} style={{
+                        backgroundColor: colors[index],
+                    }} onClick={() => onAnswer(a)}>
+                        <input type='radio' name='answer' value={a} />
+                        <MDEditor.Markdown source={a.noi_dung} style={{ backgroundColor: "transparent", fontSize: "1.3rem", fontFamily: "Roboto", whiteSpace: 'pre-wrap', maxWidth: '100%' }} />
                     </div>
                 ))}
             </div>
@@ -76,27 +76,17 @@ function Result({ result }) {
 }
 
 export default function Play() {
-    /** @type {[string, React.Dispatch<React.SetStateAction<string>>]} */
     const [sessionId, setSessionId] = useState(sessionStorage.getItem('session_id') || '');
-    /**
-     * @type {[string, React.Dispatch<React.SetStateAction<string>>]
-     */
     const [player, setPlayer] = useState(JSON.parse(sessionStorage.getItem('player') || '{}'));
     const [loading, setLoading] = useState(true);
-
-    /**
-     * @type {[{noi_dung: string, lua_chon: [], thoi_gian: number, da_tra_loi: boolean}[], React.Dispatch<React.SetStateAction<{noi_dung: string, lua_chon: [], thoi_gian: number, da_tra_loi: boolean}[]>>]}
-     */
     const [questions, setQuestions] = useState([]);
-    const [bai_lam, setAnswers] = useState([]);
+    const [bai_lam, setBaiLam] = useState([]);
     const [currentQuestion, setCurrentQuestion] = useState(-1);
+    const [answersTem, setAnswersTem] = useState();
+    const [isNopBai, setIsNopBai] = useState(false);
 
     const [score, setScore] = useState(0);
-    const [countDown, setCountDown] = useState(-1);
     const [startTime, setStartTime] = useState(null);
-    const [result, setResult] = useState(-1);
-
-    const countDownRef = useRef(null);
 
     const nav = useNavigate();
 
@@ -113,13 +103,14 @@ export default function Play() {
                 bai_lam: bai_lam,
             })
         }).then(async res => {
-            if (res.status !== 200) {
+            if (!res.ok) {
                 console.error('Error fetching questions:', res);
                 return;
             }
+            setIsNopBai(true);
             const data = await res.json();
             setScore(data.diem);
-            setResult(1);
+            sessionStorage.clear();
         }).catch(err => {
             console.error('Error fetching questions:', err);
         })
@@ -138,11 +129,9 @@ export default function Play() {
             }
             let data = await res.json();
             setQuestions(data);
-            nextQuestion();
             setLoading(false);
             let currentQuestion = data.findIndex(e => !e.da_tra_loi);
             setCurrentQuestion(currentQuestion === -1 ? data.length : currentQuestion);
-            setCountDown(data[currentQuestion]?.thoi_gian || -1);
         }).catch(err => {
             console.error('Error fetching questions:', err);
             nav('/');
@@ -150,73 +139,85 @@ export default function Play() {
 
     }, [])
 
-    useEffect(() => {
-        if (currentQuestion === questions.length) {
-            console.log('done')
-            handleNopBai();
-            return;
+
+    const saveAnswer = (answer) => {
+        if (!answersTem && !answer) return;
+        const a = answer ? answer : answersTem; 
+        setBaiLam(e => {
+            const cau_index = e.findIndex(e => e.cau_hoi_id === questions[currentQuestion]?.cau_hoi_id);
+            
+            if (cau_index === -1) {
+                return [...e, {
+                    cau_hoi_id: questions[currentQuestion]?.cau_hoi_id,
+                    lua_chon_id: a?.lua_chon_id,
+                    thoi_gian_con_lai: 0,
+                    thoi_gian_nop: new Date().getTime()
+                }]
+            }
+            e[cau_index].lua_chon_id = a?.lua_chon_id;
+            e[cau_index].thoi_gian_con_lai = 0;
+            e[cau_index].thoi_gian_nop = new Date().getTime();
+
+            return [...e];
+
+        });
+    }
+
+    const prevQuestion = () => {
+        let prevQuestionCurr = currentQuestion - 1;
+        if (prevQuestionCurr < 0) {
+            prevQuestionCurr = questions.length - 1;
         }
 
-        if (countDownRef.current) clearInterval(countDownRef.current);
-
-        countDownRef.current = setInterval(() => {
-            setCountDown(c => {
-                if (c === 0) {
-                    handleAnswer(null)
-                    return -1;
-                }
-                if (c <= 0) return -1;
-                return c - 1;
-            });
-        }, 1000)
-        return () => clearInterval(countDownRef.current);
-    }, [currentQuestion])
+        setAnswersTem(bai_lam.find(e => e.cau_hoi_id === questions[prevQuestionCurr]?.cau_hoi_id));
+        setCurrentQuestion(prevQuestionCurr);
+        setStartTime(new Date().getTime());
+    }
+        
 
     const nextQuestion = () => {
         let nextQuestionCurr = currentQuestion + 1;
-    
-        while (nextQuestionCurr <= questions.length && questions[nextQuestionCurr]?.da_tra_loi) {
-            nextQuestionCurr++;
+        if (nextQuestionCurr >= questions.length) {
+            nextQuestionCurr = 0;
         }
 
-        console.log(nextQuestionCurr)
-        console.log(questions[nextQuestionCurr])
+        setAnswersTem(bai_lam.find(e => e.cau_hoi_id === questions[nextQuestionCurr]?.cau_hoi_id));
         setCurrentQuestion(nextQuestionCurr);
-        setCountDown(questions[nextQuestionCurr]?.thoi_gian || -1);
         setStartTime(new Date().getTime());
+
+
     }
 
     const handleAnswer = (answer) => {
-        setAnswers([...bai_lam, {
-            lua_chon_id: answer?.lua_chon_id,
-            thoi_gian_con_lai: countDown,
-            thoi_gian_lop: new Date().getTime()
-        }]);
-
-        nextQuestion();
+        setAnswersTem(answer);
+        saveAnswer(answer);
     }
 
+    console.log(bai_lam)
+
     return (
-        currentQuestion === questions.length ?
+        isNopBai ?
             <LeaderBoard session_id={sessionId}/> :
             <div className='Play' data-color-mode="light">
                 <div className='play-footer'>
                     <div className='play-footer-left'>
-                        <span>Score: {score}</span>
-                        <span>Question: {Math.min(currentQuestion + 1, questions.length)}/{questions.length}</span>
+                        <span>Bài kiểm</span>
                     </div>
                     <div className='play-footer-right'>
-                        <span>Time: {countDown}s </span>
+                        <button onClick={handleNopBai}>Nộp bài</button>
                     </div>
                 </div>
                 <div className='play-container'>
                     {
-                        result !== -1 ?
-                            <Result result={result} /> :
                             loading ?
                                 <Ready /> :
-                                <Question question={questions[currentQuestion]} onAnswer={handleAnswer} />
+                                <Question question={questions[currentQuestion]} onAnswer={handleAnswer} answer={answersTem} />
                     }
+                </div>
+                <div className='play-navigation'>
+                        <button onClick={prevQuestion}>quay lại</button>
+                        <span>{Math.min(currentQuestion + 1, questions.length)}/{questions.length}</span>
+                        <button onClick={nextQuestion}>tiếp</button>
                 </div>
             </div>
     )

@@ -17,7 +17,7 @@ export default function JoinGame() {
 
     const checkGameCode = async (code) => {
         setLoading(true);
-        fetch(api_confg.session.getSessionByCodeJoin + code ?? gameCode, {
+        fetch(api_confg.session.getSessionByCodeJoin + (code ? code : gameCode), {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

@@ -1,6 +1,6 @@
 
 // const base_url = 'http://localhost:3030';
-const base_url = 'http://192.168.6.146:3030';
+const base_url = process.env.REACT_APP_API_URL;
 const api_config = {
     api_url: base_url,
     accounts: {

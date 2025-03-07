@@ -2,7 +2,7 @@
     height: 100%;
     display: grid;
     background-image: linear-gradient(to right bottom, #051937, #002768, #203098, #572fc5, #9612eb);
-    grid-template-rows: 60px 1fr;
+    grid-template-rows: 50px 1fr 50px;
 }
 .Play-leader-board {
 
@@ -70,6 +70,12 @@
     transform: scale(0.99);
 }
 
+.question-wrapper .answer.sele {
+    transform: scale(0.95);
+    filter: brightness(0.5);
+}
+
+
 .question-wrapper .answer input[type=radio] {
     display: none;
 }
@@ -115,4 +121,27 @@
 .leaderboard__player__info.you {
     background-color: #f0f0f0;
     color: #232323;
+}
+
+.play-navigation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #232323;
+    font-size: 1.2rem;
+    color: #efefef;
+    gap: 10px;
+}
+
+.Play button {
+    font-weight: bold;
+    background-color: #232323;
+    color: #efefef;
+    background: gray;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    padding: 4px 10px;
+    width: 70px;
+    border-radius: 5px;
 }
