@@ -33,16 +33,6 @@ export default function Instructions() {
 
             nav('/play');
 
-            // if (data.thoi_gian_bat_dau !== null) {
-            //     const now = new Date().getTime();
-            //     const countDownDate = new Date(data.thoi_gian_bat_dau).getTime();
-            //     const distance = countDownDate - now;
-            //     setCountDown(distance);
-            //     if (distance < 0) {
-
-            //         nav('/play')
-            //     }
-            // }
         }).catch(err => {
             console.log(err);
         })

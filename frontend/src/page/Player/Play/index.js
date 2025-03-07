@@ -13,32 +13,15 @@ function Ready() {
     )
 }
 
-function LeaderBoard({ session_id, user_id }) {
-    const [players, setPlayers] = useState([]);
-    const [userRank, setUserRank] = useState(null);
-
-    useEffect(() => {
-        fetch(apiconfig.session.getSessionById + session_id + '/leaderboard', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        }).then(async (res) => {
-            if (res.status !== 200) {
-                return;
-            }
-            const data = await res.json();
-            setPlayers(data);
-            const rank = data.findIndex(player => player.uuid === user_id) + 1;
-            setUserRank(rank);
-        }).catch(err => {
-            console.log(err);
-        });
-    }, [session_id, user_id]);
+function LeaderBoard() {
 
     return (
-        <div className='Play-leader-board' data-color-mode="light">
-            <LeaderBoard_ players={players} userRank={userRank} />
+        <div className='Play-leader-board' style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+        }} data-color-mode="light">
+            <h1 style={{color: '#efefef', textAlign: 'center'}}>Chúc mừng bạn đã hoàn thành bài test.</h1>
         </div>
     );
 }
@@ -94,18 +77,18 @@ function Result({ result }) {
 
 export default function Play() {
     /** @type {[string, React.Dispatch<React.SetStateAction<string>>]} */
-    const [sessionId, setSessionId] = useState(localStorage.getItem('session_id') || '');
+    const [sessionId, setSessionId] = useState(sessionStorage.getItem('session_id') || '');
     /**
      * @type {[string, React.Dispatch<React.SetStateAction<string>>]
      */
-    const [userId, setUserId] = useState(localStorage.getItem('uuid'));
+    const [player, setPlayer] = useState(JSON.parse(sessionStorage.getItem('player') || '{}'));
     const [loading, setLoading] = useState(true);
 
     /**
      * @type {[{noi_dung: string, lua_chon: [], thoi_gian: number, da_tra_loi: boolean}[], React.Dispatch<React.SetStateAction<{noi_dung: string, lua_chon: [], thoi_gian: number, da_tra_loi: boolean}[]>>]}
      */
     const [questions, setQuestions] = useState([]);
-    const [answers, setAnswers] = useState([]);
+    const [bai_lam, setAnswers] = useState([]);
     const [currentQuestion, setCurrentQuestion] = useState(-1);
 
     const [score, setScore] = useState(0);
@@ -117,8 +100,33 @@ export default function Play() {
 
     const nav = useNavigate();
 
+    const handleNopBai = () => {
+        fetch(apiconfig.player.addPlayer, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                session_id: sessionId,
+                ...player,
+                thoi_gian_ket_thuc: new Date().toISOString(),
+                bai_lam: bai_lam,
+            })
+        }).then(async res => {
+            if (res.status !== 200) {
+                console.error('Error fetching questions:', res);
+                return;
+            }
+            const data = await res.json();
+            setScore(data.diem);
+            setResult(1);
+        }).catch(err => {
+            console.error('Error fetching questions:', err);
+        })
+    }
+
     useEffect(() => {
-        fetch(apiconfig.session.getSessionById + sessionId + '/cau_hoi?user_id=' + userId, {
+        fetch(apiconfig.session.getSessionById + sessionId + '/cau_hoi', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -140,12 +148,12 @@ export default function Play() {
             nav('/');
         })
 
-
     }, [])
 
     useEffect(() => {
         if (currentQuestion === questions.length) {
             console.log('done')
+            handleNopBai();
             return;
         }
 
@@ -179,46 +187,18 @@ export default function Play() {
     }
 
     const handleAnswer = (answer) => {
-        if (answer) {
-            fetch(apiconfig.session.getSessionById + sessionId + '/tra_loi', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    user_id: userId,
-                    lua_chon_id: answer.lua_chon_id,
-                    thoi_gian_con_lai: Math.floor(new Date().getTime() - startTime) / 10,
-                    thoi_gian_lop: new Date().getTime()
-                })
-            }).then(async res => {
-                if (res.status === 200) {
-                    const data = await res.json();
-                    setScore(data.user.point);
-                    setResult(data.dung ? 1 : 0);
-                }
-                else {
-                    setResult(0);
-                }
-            }).catch(err => {
-                console.error('Error submitting answer:', err);
-                setResult(0);
-            });
-        } else {
-            setResult(0);
-        }
+        setAnswers([...bai_lam, {
+            lua_chon_id: answer?.lua_chon_id,
+            thoi_gian_con_lai: countDown,
+            thoi_gian_lop: new Date().getTime()
+        }]);
 
-        setTimeout(() => {
-            setResult(-1);
-            nextQuestion();
-        }, 1500);
-
+        nextQuestion();
     }
 
     return (
-
         currentQuestion === questions.length ?
-            <LeaderBoard session_id={sessionId} user_id={userId} /> :
+            <LeaderBoard session_id={sessionId}/> :
             <div className='Play' data-color-mode="light">
                 <div className='play-footer'>
                     <div className='play-footer-left'>

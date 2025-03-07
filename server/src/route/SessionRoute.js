@@ -14,7 +14,5 @@ router.delete('/:session_id', SessionController.deleteSession);
 router.get('/:session_id/leaderboard', SessionController.getLeaderBoard);
 // TODO: làm tiếp phần này 
 router.get('/:session_id/cau_hoi', SessionController.getQuestion); // lấy câu hỏi ngẫu nhiên
-router.post('/:session_id/tra_loi', SessionController.answerQuestion); // trả lời câu hỏi
-
 
 export default router;

@@ -7,6 +7,9 @@ import {
   updatePlayer,
   deletePlayer,
 } from '../model/PlayerModel.js';
+import {
+  getAllLuaChon
+} from '../model/CauHoiModel.js';
 import HTTP_STATUS from '../constants/httpStatus.js';
 
 class PlayerController {
@@ -57,21 +60,30 @@ class PlayerController {
         name,
         email,
         std,
+        thoi_gian_ket_thuc,
+        thoi_gian_vao,
+        bai_lam
       } = req.body;
+
+      const lua_chon_ids = bai_lam.map(e => e.lua_chon_id);
+      const all_lua_chon = await getAllLuaChon();
+      const point = all_lua_chon.filter(e => lua_chon_ids.includes(e.lua_chon_id) && e.dung).length
+
       const player = await createPlayer({
         uuid,
         session_id,
         name,
         email,
         std,
-        point: 0,
-        thoi_gian_lam_bai: null,
-        thoi_gian_voa: new Date(),
-        bai_lam: [],
+        thoi_gian_ket_thuc: new Date(thoi_gian_ket_thuc),
+        thoi_gian_vao: new Date(thoi_gian_vao),
+        point,
+        bai_lam
       });
       res.status(HTTP_STATUS.CREATED).json(player);
     } catch (err) {
       res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: String(err) });
+      console.log(err)
     }
   }
 

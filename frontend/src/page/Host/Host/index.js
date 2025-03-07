@@ -4,7 +4,9 @@ import { useNavigate, useParams } from 'react-router'
 import apiconfig from '../../../config/api_config'
 import './Host.css'
 
-function WaitingRoom({ rootID, players, onStartGame }) {
+function WaitingRoom({ rootID }) {
+    const nav = useNavigate();
+    const { session_id } = useParams();
     return <div className='waiting-room'>
         <div className="host__container">
             <div className="host-qr-code">
@@ -13,10 +15,13 @@ function WaitingRoom({ rootID, players, onStartGame }) {
             <div className="host__container__info">
                 <h1>Mã phòng</h1>
                 <h2>{rootID}</h2>
-                <button onClick={onStartGame}>Bắt đầu</button>
+
+                <button onClick={() => {
+                    nav('/host/' + session_id + '/leaderboard')
+                }}></button>
             </div>
         </div>
-        <div className='host__players__counts'>
+        {/* <div className='host__players__counts'>
             <h2>Người chơi: {players?.length}</h2>
         </div>
         <div className='host__players'>
@@ -30,43 +35,64 @@ function WaitingRoom({ rootID, players, onStartGame }) {
                             <h3>{player.name}</h3>
                         </div>
                         <div className='host__player__action'>
-                            {/* <button>Kick</button> */}
                         </div>
                     </div>
                 })
             }
-        </div>
+        </div> */}
     </div>;
 }
 
-export function LeaderBoard({ players, clock, thoi_gian_lam_bai, handleEndGame }) {
+export function LeaderBoard() {
+    const { session_id } = useParams();
     const nav = useNavigate();
-    const [distance, setDistance] = useState(0);
-    const setIntervalRef = React.useRef(null);
+    const [players, setPlayers] = useState([])
+    const [cauhoi, setCauhoi] = useState([])
+
+    const getSession = async () => {
+        try {
+            const resp = await fetch(apiconfig.session.getSessionById + session_id + '/cau_hoi', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+
+            })
+            if (resp.ok) {
+                setCauhoi(await resp.json())
+                return
+            }
+        } catch (err) {
+            console.error('Error fetching questions:', err);
+        }
+    }
+
+    const getPlayers = async () => {
+        try {
+            const res = await fetch(apiconfig.session.getSessionById + session_id + '/leaderboard', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+
+            if (res.ok) {
+                let data = await res.json();
+                data = data.sort((a, b) => {
+                    return - new Date(b.thoi_gian_ket_thuc) + new Date(a.thoi_gian_ket_thuc)
+                })
+                setPlayers(data)
+                return
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }
 
     useEffect(() => {
-        if (!clock) return;
-        if (setIntervalRef.current) clearInterval(setIntervalRef.current);
-
-        setIntervalRef.current = setInterval(() => {
-            const now = new Date().getTime();
-            let countDownDate = new Date(clock).getTime();
-            countDownDate += (thoi_gian_lam_bai * 1000);
-            const distance = countDownDate - now;
-            setDistance(Math.max(distance, 0));
-            if (distance <= 0) {
-                clearInterval(setIntervalRef.current);
-                handleEndGame && handleEndGame();
-            }
-        }, 1000)
-
-        return () => {
-            if (setIntervalRef.current) clearInterval(setIntervalRef.current);
-        }
+        getPlayers();
+        getSession();
     }, [])
-
-    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
     return <div className='leaderboard-wrapper'>
         <div className='leaderboard__header'>
@@ -75,26 +101,24 @@ export function LeaderBoard({ players, clock, thoi_gian_lam_bai, handleEndGame }
         </div>
 
         <div>
-
-            {clock &&
-                <div className='leaderboard__clock'>
-                    🕒 {minutes}m:{seconds}s
-                </div>
-            }
             <div className='leaderboard'>
                 <div div className='leaderboard__players'>
                     {
                         players.map((player, index) => {
                             return <div className='leaderboard__player' key={index}>
                                 <h3 className='leaderboard__player__stt'>{index + 1}</h3>
-                                <div className='leaderboard__player__avt'>
+                                {/* <div className='leaderboard__player__avt'>
                                     <img src={'https://avatar.iran.liara.run/username?username=' + player.name} alt='avt' />
-                                </div>
+                                </div> */}
                                 <div className='leaderboard__player__info'>
                                     <h3>{player.name}</h3>
+                                    <p>{player.email}</p>
                                 </div>
                                 <div className='leaderboard__player__score'>
-                                    <h3>{player.point}</h3>
+                                    <p>{player.point}/{cauhoi.length}</p>
+                                </div>
+                                <div className='leaderboard__player__thoi_gian_nop'>
+                                    <h3>{(new Date(player.thoi_gian_ket_thuc)).toLocaleTimeString("en-GB")}</h3>
                                 </div>
                             </div>
                         })
@@ -168,6 +192,7 @@ export default function Host() {
 
         setintervalRef.current = setInterval(() => {
             getPlayers();
+            clearInterval(setintervalRef.current);
         }, 1000)
 
         return () => {

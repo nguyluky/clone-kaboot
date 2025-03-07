@@ -141,26 +141,8 @@ class SessionController {
     async getQuestion(req, res) {
         try {
             const { session_id } = req.params;
-            const { user_id } = req.query;
-
-            const user = await filePlayerById(user_id);
-            if (!user) {
-                res.status(HTTP_STATUS.NOT_FOUND).json({ message: 'Player not found' });
-                return;
-            }
-
-            /**
-             * @type {{
-             * cau_id: string,
-             * lua_chon_id: string,
-             * thoi_gian_con_lai: number
-             * }[]}
-             */
-            const bai_lam = user.bai_lam || [];
-            const cau_hoi_ids = bai_lam.map(e => e.cau_id);
 
             const canva_id = (await findById(session_id)).canva_id;
-            console.log(cau_hoi_ids)
             let questions = await findQuestionsByCanvaId(canva_id);
             questions = questions.map(e => {
                 return {
@@ -171,7 +153,6 @@ class SessionController {
                             dung: undefined
                         }
                     }) || [],
-                    da_tra_loi: cau_hoi_ids.includes(e.cau_hoi_id)
                 }
             })
             res.status(HTTP_STATUS.OK).json(questions);
@@ -182,66 +163,6 @@ class SessionController {
         }
     }
 
-    async answerQuestion(req, res) {
-        try {
-            /** @type {{session_id: string}} */
-            const { session_id } = req.params;
-            /** @type {{user_id: string, lua_chon_id: string, thoi_gian_con_lai: number}} */
-            const { user_id, lua_chon_id, thoi_gian_con_lai } = req.body;
-
-            let session = await findById(session_id);
-            if (!session) {
-                res.status(HTTP_STATUS.NOT_FOUND).json({ message: 'Session not found' });
-                return;
-            }
-
-            if (session.trang_thai !== 'dang_choi') {
-                res.status(HTTP_STATUS.BAD_REQUEST).json({ message: 'Session is not in progress' });
-                return;
-            }
-
-            let player = await filePlayerById(user_id);
-            if (!player) {
-                res.status(HTTP_STATUS.NOT_FOUND).json({ message: 'Player not found' });
-                return;
-            }
-
-            const lua_chon = await findLuaChonById(lua_chon_id);
-            if (!lua_chon) {
-                res.status(HTTP_STATUS.NOT_FOUND).json({ message: 'Lua chon not found' });
-                return
-            }
-
-            // kiểm tra câu hỏi có tồn tại khôtr
-            player.bai_lam = player.bai_lam || [];
-            const cau_hoi_ids = player.bai_lam.map(e => e.cau_id);
-            console.log(cau_hoi_ids)
-            if (!cau_hoi_ids.includes(lua_chon.cau_hoi_id)) {
-                const bai_lam = player.bai_lam || [];
-                bai_lam.push({ cau_id: lua_chon.cau_hoi_id, lua_chon_id, thoi_gian_con_lai });
-
-                if (lua_chon.dung) {
-
-                    player.point += thoi_gian_con_lai;
-                }
-
-                player = { ...player, bai_lam: bai_lam }
-                if (player.thoi_gian_lam_bai === null) {
-                    player.thoi_gian_lam_bai = 0;
-                }
-                player.thoi_gian_lam_bai += thoi_gian_con_lai;
-                await updatePlayer(user_id, player);
-
-            }
-
-
-            res.status(HTTP_STATUS.OK).json({ user: player, dung: lua_chon.dung });
-
-        } catch (err) {
-            res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: 'Error answering question' });
-            console.log(err)
-        }
-    }
 }
 
 export default new SessionController();

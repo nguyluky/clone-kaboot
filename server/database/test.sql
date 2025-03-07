@@ -55,3 +55,4 @@ UPDATE `lua_chon` SET noi_dung = "", dung = FALSE WHERE lua_chon_id = 1;
 
 SELECT *, (SELECT SUM(cau_hoi.thoi_gian) + SUM(2) FROM cau_hoi WHERE cau_hoi.canva_id = session.canva_id) as thoi_gian_lam_bai FROM session WHERE session_id = 8;
 
+SELECT COUNT(*) FROM lua_chon WHERE cau_hoi_id in (1, 2, 3) AND dung = TRUE;

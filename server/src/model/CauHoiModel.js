@@ -66,3 +66,8 @@ export const findLuaChonById = async (lua_chon_id) => {
   const [rows] = await pool.query('SELECT * FROM lua_chon WHERE lua_chon_id = ?', [lua_chon_id]);
   return rows[0] || null;
 }
+
+export const getAllLuaChon = async () => {
+  const [rows] = await pool.query('SELECT * FROM lua_chon');
+  return rows;
+}

@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 export default function JoinGame() {
     const [search, setSearch] = useSearchParams();
-    const [gameCode, setGameCode] = useState(search.get('code') || '');
+    const [gameCode, setGameCode] = useState('');
     const [sessionId, setSessionId] = useState('');
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -15,9 +15,9 @@ export default function JoinGame() {
 
     const nav = useNavigate();
 
-    const checkGameCode = async () => {
+    const checkGameCode = async (code) => {
         setLoading(true);
-        fetch(api_confg.session.getSessionByCodeJoin + gameCode, {
+        fetch(api_confg.session.getSessionByCodeJoin + code ?? gameCode, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -39,43 +39,22 @@ export default function JoinGame() {
     const addPlayer = async () => {
         setLoading(true);
         const uuid = uuidv4();
-        fetch(
-            api_confg.player.addPlayer, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                uuid: uuid,
-                session_id: sessionId,
-                name,
-                email,
-                std,
-            }),
-        }).then(async (res) => {
-            setLoading(false);
-            if (res.status !== 201) {
-                alert('error');
-                return;
-            }
-
-            localStorage.setItem('uuid', uuid);
-            localStorage.setItem('session_id', sessionId);
-            localStorage.setItem('name', name);
-
-            nav('/instructions');
-
-        })
-            .catch(err => {
-                alert('error');
-                console.log(err);
-            })
+        sessionStorage.setItem('player', JSON.stringify({
+            uuid,
+            session_id: sessionId,
+            name,
+            email,
+            std,
+            thoi_gian_vao: new Date().toISOString(),
+        }));
+        sessionStorage.setItem('session_id', sessionId);
+        nav('/play');
     }
 
 
     useEffect(() => {
-        if (!gameCode) return;
-        checkGameCode();
+        if (!search.get('code') ) return
+        checkGameCode(search.get('code'));
     }, [gameCode])
 
     return (
