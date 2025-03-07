@@ -1,4 +1,3 @@
-
 import {
   findAll,
   findUserName,
@@ -16,7 +15,7 @@ class AccountController {
       const accounts = await findAll();
       res.status(HTTP_STATUS.OK).json(accounts);
     } catch (err) {
-      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: 'Error fetching accounts' });
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: String(err) });
     }
   }
 
@@ -29,7 +28,7 @@ class AccountController {
       }
       res.status(HTTP_STATUS.OK).json(account);
     } catch (err) {
-      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: 'Error fetching account' });
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: String(err) });
     }
   }
 
@@ -52,7 +51,7 @@ class AccountController {
     } catch (err) {
       res
         .status(HTTP_STATUS.INTERNAL_SERVER_ERROR)
-        .json({ message: 'Error registering account', error: err.message });
+        .json({ message: String(err) });
     }
   }
 
@@ -75,7 +74,7 @@ class AccountController {
     } catch (err) {
       res
         .status(HTTP_STATUS.INTERNAL_SERVER_ERROR)
-        .json({ message: 'Error logging in', error: err.message });
+        .json({ message: String(err) });
     }
   }
 
@@ -87,7 +86,7 @@ class AccountController {
     } catch (err) {
       res
         .status(HTTP_STATUS.INTERNAL_SERVER_ERROR)
-        .json({ message: 'Error logging out', error: err.message });
+        .json({ message: String(err) });
     }
   }
 
@@ -98,7 +97,7 @@ class AccountController {
       const account = await createAccount({ username, password: hashedPassword, email });
       res.status(HTTP_STATUS.CREATED).json(account);
     } catch (err) {
-      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: err });
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: String(err) });
     }
   }
 
@@ -115,7 +114,7 @@ class AccountController {
       await updateAccount(emailAccount, { username, password: hashedPassword });
       res.status(HTTP_STATUS.NO_CONTENT).json({ message: 'Update account success' });
     } catch (err) {
-      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: err.message });
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: String(err) });
     }
   }
 
@@ -129,7 +128,7 @@ class AccountController {
       await deleteAccount(username);
       res.status(HTTP_STATUS.NO_CONTENT).json({ message: 'Delete account success' });
     } catch (err) {
-      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: 'Error deleting account' });
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: String(err) });
     }
   }
 }

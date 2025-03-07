@@ -1,225 +1,144 @@
 import './Play.css';
-import React, { useState, useEffect, useRef } from 'react';
-import MDEditor from '@uiw/react-md-editor';
+import React, { useState, useEffect } from 'react';
 import apiconfig from '../../../config/api_config';
 import { useNavigate } from 'react-router';
-import { LeaderBoard as LeaderBoard_ } from '../../Host/Host';
-
-function Ready() {
-    return (
-        <div>
-            <h1>Ready</h1>
-        </div>
-    )
-}
-
-function LeaderBoard() {
-
-    return (
-        <div className='Play-leader-board' style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-        }} data-color-mode="light">
-            <h1 style={{color: '#efefef', textAlign: 'center'}}>Chúc mừng bạn đã hoàn thành bài test.</h1>
-        </div>
-    );
-}
-
-/**
- * 
- * @param {{
- * question: string,
- * answers: []
- * }} param0 
- * @returns 
- */
-function Question({ question, onAnswer, answer }) {
-    const colors = [
-        "#FFEB3B",
-        "#FF9800",
-        "#F44336",
-        "#03DAC6",
-        "#E91E63",
-        "#FFFFFF",
-        "#90CAF9"
-    ]
-
-    const answers = question?.lua_chon;
-    return (
-        <div className='question-wrapper' >
-            <div className='question'>
-                <MDEditor.Markdown source={question?.noi_dung} style={{ backgroundColor: "transparent", fontSize: "1.3rem", fontFamily: "Roboto", whiteSpace: 'pre-wrap', maxWidth: '100%' }} />
-            </div>
-            <div className='answers'>
-                {answers?.map((a, index) => (
-                    <div key={index} className={'answer' + (a.lua_chon_id == answer?.lua_chon_id ? ' sele' : '')} style={{
-                        backgroundColor: colors[index],
-                    }} onClick={() => onAnswer(a)}>
-                        <input type='radio' name='answer' value={a} />
-                        <MDEditor.Markdown source={a.noi_dung} style={{ backgroundColor: "transparent", fontSize: "1.3rem", fontFamily: "Roboto", whiteSpace: 'pre-wrap', maxWidth: '100%' }} />
-                    </div>
-                ))}
-            </div>
-        </div>
-    )
-}
-
-function Result({ result }) {
-    return (
-        <div className={`Result ${result === 1 ? 'correct' : 'incorrect'}`}>
-            <div className='Result__content'>
-                <h1>{result === 1 ? 'Correct' : 'Incorrect'}</h1>
-            </div>
-        </div>
-    );
-}
+import Loading from './Loading';
+import CompletionMessage from './CompletionMessage';
+import QuestionDisplay from './QuestionDisplay';
+import AnswerResult from './AnswerResult';
 
 export default function Play() {
-    const [sessionId, setSessionId] = useState(sessionStorage.getItem('session_id') || '');
-    const [player, setPlayer] = useState(JSON.parse(sessionStorage.getItem('player') || '{}'));
+    const [sessionId] = useState(sessionStorage.getItem('session_id') || '');
+    const [player] = useState(JSON.parse(sessionStorage.getItem('player') || '{}'));
     const [loading, setLoading] = useState(true);
     const [questions, setQuestions] = useState([]);
-    const [bai_lam, setBaiLam] = useState([]);
-    const [currentQuestion, setCurrentQuestion] = useState(-1);
-    const [answersTem, setAnswersTem] = useState();
-    const [isNopBai, setIsNopBai] = useState(false);
+    const [answers, setAnswers] = useState([]);
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(-1);
+    const [selectedAnswer, setSelectedAnswer] = useState();
+    const [isSubmitted, setIsSubmitted] = useState(false);
 
-    const [score, setScore] = useState(0);
-    const [startTime, setStartTime] = useState(null);
-
-    const nav = useNavigate();
-
-    const handleNopBai = () => {
-        fetch(apiconfig.player.addPlayer, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                session_id: sessionId,
-                ...player,
-                thoi_gian_ket_thuc: new Date().toISOString(),
-                bai_lam: bai_lam,
-            })
-        }).then(async res => {
-            if (!res.ok) {
-                console.error('Error fetching questions:', res);
-                return;
-            }
-            setIsNopBai(true);
-            const data = await res.json();
-            setScore(data.diem);
-            sessionStorage.clear();
-        }).catch(err => {
-            console.error('Error fetching questions:', err);
-        })
-    }
+    const navigate = useNavigate();
 
     useEffect(() => {
-        fetch(apiconfig.session.getSessionById + sessionId + '/cau_hoi', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        }).then(async res => {
+        fetchQuestions();
+    }, []);
+
+    const fetchQuestions = async () => {
+        try {
+            const res = await fetch(apiconfig.session.getSessionById + sessionId + '/cau_hoi', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
             if (res.status !== 200) {
-                nav('/')
+                navigate('/');
                 return;
             }
-            let data = await res.json();
+            const data = await res.json();
             setQuestions(data);
             setLoading(false);
-            let currentQuestion = data.findIndex(e => !e.da_tra_loi);
-            setCurrentQuestion(currentQuestion === -1 ? data.length : currentQuestion);
-        }).catch(err => {
+            const currentQuestionIndex = data.findIndex(e => !e.da_tra_loi);
+            setCurrentQuestionIndex(currentQuestionIndex === -1 ? data.length : currentQuestionIndex);
+        } catch (err) {
             console.error('Error fetching questions:', err);
-            nav('/');
-        })
+            navigate('/');
+        }
+    };
 
-    }, [])
-
+    const submitAnswers = async () => {
+        try {
+            const res = await fetch(apiconfig.player.addPlayer, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    session_id: sessionId,
+                    ...player,
+                    thoi_gian_ket_thuc: new Date().toISOString(),
+                    bai_lam: answers,
+                })
+            });
+            if (!res.ok) {
+                console.error('Error submitting answers:', res);
+                return;
+            }
+            setIsSubmitted(true);
+            const data = await res.json();
+            sessionStorage.clear();
+        } catch (err) {
+            console.error('Error submitting answers:', err);
+        }
+    };
 
     const saveAnswer = (answer) => {
-        if (!answersTem && !answer) return;
-        const a = answer ? answer : answersTem; 
-        setBaiLam(e => {
-            const cau_index = e.findIndex(e => e.cau_hoi_id === questions[currentQuestion]?.cau_hoi_id);
-            
-            if (cau_index === -1) {
-                return [...e, {
-                    cau_hoi_id: questions[currentQuestion]?.cau_hoi_id,
-                    lua_chon_id: a?.lua_chon_id,
+        if (!selectedAnswer && !answer) return;
+        const currentAnswer = answer ? answer : selectedAnswer;
+        setAnswers(prevAnswers => {
+            const questionIndex = prevAnswers.findIndex(e => e.cau_hoi_id === questions[currentQuestionIndex]?.cau_hoi_id);
+            if (questionIndex === -1) {
+                return [...prevAnswers, {
+                    cau_hoi_id: questions[currentQuestionIndex]?.cau_hoi_id,
+                    lua_chon_id: currentAnswer?.lua_chon_id,
                     thoi_gian_con_lai: 0,
                     thoi_gian_nop: new Date().getTime()
-                }]
+                }];
             }
-            e[cau_index].lua_chon_id = a?.lua_chon_id;
-            e[cau_index].thoi_gian_con_lai = 0;
-            e[cau_index].thoi_gian_nop = new Date().getTime();
-
-            return [...e];
-
+            prevAnswers[questionIndex].lua_chon_id = currentAnswer?.lua_chon_id;
+            prevAnswers[questionIndex].thoi_gian_con_lai = 0;
+            prevAnswers[questionIndex].thoi_gian_nop = new Date().getTime();
+            return [...prevAnswers];
         });
-    }
+    };
 
-    const prevQuestion = () => {
-        let prevQuestionCurr = currentQuestion - 1;
-        if (prevQuestionCurr < 0) {
-            prevQuestionCurr = questions.length - 1;
+    const goToPreviousQuestion = () => {
+        let prevQuestionIndex = currentQuestionIndex - 1;
+        if (prevQuestionIndex < 0) {
+            prevQuestionIndex = questions.length - 1;
         }
+        setSelectedAnswer(answers.find(e => e.cau_hoi_id === questions[prevQuestionIndex]?.cau_hoi_id));
+        setCurrentQuestionIndex(prevQuestionIndex);
+    };
 
-        setAnswersTem(bai_lam.find(e => e.cau_hoi_id === questions[prevQuestionCurr]?.cau_hoi_id));
-        setCurrentQuestion(prevQuestionCurr);
-        setStartTime(new Date().getTime());
-    }
-        
-
-    const nextQuestion = () => {
-        let nextQuestionCurr = currentQuestion + 1;
-        if (nextQuestionCurr >= questions.length) {
-            nextQuestionCurr = 0;
+    const goToNextQuestion = () => {
+        let nextQuestionIndex = currentQuestionIndex + 1;
+        if (nextQuestionIndex >= questions.length) {
+            nextQuestionIndex = 0;
         }
+        setSelectedAnswer(answers.find(e => e.cau_hoi_id === questions[nextQuestionIndex]?.cau_hoi_id));
+        setCurrentQuestionIndex(nextQuestionIndex);
+    };
 
-        setAnswersTem(bai_lam.find(e => e.cau_hoi_id === questions[nextQuestionCurr]?.cau_hoi_id));
-        setCurrentQuestion(nextQuestionCurr);
-        setStartTime(new Date().getTime());
-
-
-    }
-
-    const handleAnswer = (answer) => {
-        setAnswersTem(answer);
+    const handleAnswerSelection = (answer) => {
+        setSelectedAnswer(answer);
         saveAnswer(answer);
-    }
-
-    console.log(bai_lam)
+    };
 
     return (
-        isNopBai ?
-            <LeaderBoard session_id={sessionId}/> :
-            <div className='Play' data-color-mode="light">
-                <div className='play-footer'>
-                    <div className='play-footer-left'>
+        isSubmitted ?
+            <CompletionMessage session_id={sessionId}/> :
+            <div className='play' data-color-mode="light">
+                <div className='play__footer'>
+                    <div className='play__footer-left'>
                         <span>Bài kiểm</span>
                     </div>
-                    <div className='play-footer-right'>
-                        <button onClick={handleNopBai}>Nộp bài</button>
+                    <div className='play__footer-right'>
+                        <button className='play__button' onClick={submitAnswers}>Nộp bài</button>
                     </div>
                 </div>
-                <div className='play-container'>
+                <div className='play__container'>
                     {
-                            loading ?
-                                <Ready /> :
-                                <Question question={questions[currentQuestion]} onAnswer={handleAnswer} answer={answersTem} />
+                        loading ?
+                            <Loading /> :
+                            <QuestionDisplay question={questions[currentQuestionIndex]} onAnswer={handleAnswerSelection} answer={selectedAnswer} />
                     }
                 </div>
-                <div className='play-navigation'>
-                        <button onClick={prevQuestion}>quay lại</button>
-                        <span>{Math.min(currentQuestion + 1, questions.length)}/{questions.length}</span>
-                        <button onClick={nextQuestion}>tiếp</button>
+                <div className='play__navigation'>
+                    <button className='play__button' onClick={goToPreviousQuestion}>quay lại</button>
+                    <span>{Math.min(currentQuestionIndex + 1, questions.length)}/{questions.length}</span>
+                    <button className='play__button' onClick={goToNextQuestion}>tiếp</button>
                 </div>
             </div>
-    )
-
+    );
 }

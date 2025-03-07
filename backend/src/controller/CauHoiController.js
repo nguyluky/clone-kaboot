@@ -1,4 +1,3 @@
-
 import {
   findAll,
   findById,
@@ -18,7 +17,7 @@ class CauHoiController {
       const cauHois = await findAll();
       res.status(HTTP_STATUS.OK).json(cauHois);
     } catch (err) {
-      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: 'Error fetching questions' });
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: String(err) });
       console.log(err);
     }
   }
@@ -32,7 +31,7 @@ class CauHoiController {
       }
       res.status(HTTP_STATUS.OK).json(cauHoi);
     } catch (err) {
-      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: 'Error fetching question' });
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: String(err) });
     }
   }
 
@@ -49,7 +48,7 @@ class CauHoiController {
     } catch (err) {
       res
         .status(HTTP_STATUS.INTERNAL_SERVER_ERROR)
-        .json({ message: 'Error fetching questions by canva' });
+        .json({ message: String(err) });
     }
   }
 
@@ -59,7 +58,7 @@ class CauHoiController {
       const cauHoi = await createCauHoi({ canva_id, noi_dung, dinh_dang, thoi_gian });
       res.status(HTTP_STATUS.CREATED).json(cauHoi);
     } catch (err) {
-      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: 'Error creating question' });
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: String(err) });
     }
   }
 
@@ -86,7 +85,7 @@ class CauHoiController {
       }
       res.status(HTTP_STATUS.NO_CONTENT).json({ message: 'Question deleted successfully' });
     } catch (err) {
-      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: 'Error deleting question' });
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: String(err) });
     }
   }
 
@@ -109,7 +108,7 @@ class CauHoiController {
       const result = await addLuaChon({ cau_hoi_id, noi_dung, dung });
       res.status(HTTP_STATUS.CREATED).json(result);
     } catch (err) {
-      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: 'Error creating choice' });
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: String(err) });
     }
   }
   async deleteLuaChon(req, res) {
@@ -121,7 +120,7 @@ class CauHoiController {
       }
       res.status(HTTP_STATUS.NO_CONTENT).json({ message: 'Choice deleted successfully' });
     } catch (err) {
-      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: 'Error deleting choice' });
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: String(err) });
     }
   }
 }

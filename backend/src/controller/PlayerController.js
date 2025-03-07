@@ -1,4 +1,3 @@
-
 import {
   findAll,
   findById,
@@ -18,7 +17,7 @@ class PlayerController {
       const players = await findAll();
       res.status(HTTP_STATUS.OK).json(players);
     } catch (err) {
-      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: 'Error fetching players' });
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: String(err) });
     }
   }
 
@@ -31,7 +30,7 @@ class PlayerController {
       }
       res.status(HTTP_STATUS.OK).json(player);
     } catch (err) {
-      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: 'Error fetching player' });
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: String(err) });
     }
   }
 
@@ -48,7 +47,7 @@ class PlayerController {
     } catch (err) {
       res
         .status(HTTP_STATUS.INTERNAL_SERVER_ERROR)
-        .json({ message: 'Error fetching players by session' });
+        .json({ message: String(err) });
     }
   }
 
@@ -107,7 +106,7 @@ class PlayerController {
       }
       res.status(HTTP_STATUS.NO_CONTENT).json({ message: 'Player updated successfully' });
     } catch (err) {
-      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: err.message });
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: String(err) });
     }
   }
 
@@ -120,7 +119,7 @@ class PlayerController {
       }
       res.status(HTTP_STATUS.NO_CONTENT).json({ message: 'Player deleted successfully' });
     } catch (err) {
-      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: 'Error deleting player' });
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: String(err) });
     }
   }
 }

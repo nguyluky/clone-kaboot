@@ -1,16 +1,16 @@
 
 import React from 'react';
-import { BrowserRouter, Routes, Route } from "react-router";
+import { Routes, Route } from "react-router";
 import JoinGame from './page/Player/JoinGame';
 import './App.css';
-import Instructions from './page/Player/Instructions';
 import Play from './page/Player/Play';
 import ListAllCanva from './page/Host/ListAllCanva';
 import Login from './page/Login';
 import Admin from './page/Host/Admin';
 import CanvaEdit from './page/Host/CanvaEdit';
-import Host, { LeaderBoard } from './page/Host/Host';
+import Host from './page/Host/Host';
 import ListAllSession from './page/Host/ListAllSession';
+import PlayerScoreboard from './page/Host/Host/PlayerScoreboard';
 
 function App() {
   return (
@@ -26,7 +26,7 @@ function App() {
       <Route path='/login' element={<Login />}/>
       <Route path='/register' element={<h1>Register</h1>}/>
       <Route path='/host/:session_id' element={<Host/>}/>
-      <Route path='/host/:session_id/leaderboard' element={<LeaderBoard/>}/>
+      <Route path='/host/:session_id/leaderboard' element={<PlayerScoreboard/>}/>
       <Route path='*' element={<h1>Not Found</h1>}/>
     </Routes>
   );

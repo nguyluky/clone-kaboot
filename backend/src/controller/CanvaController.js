@@ -8,7 +8,7 @@ class CanvaController {
       const canvases = await findAll();
       res.status(HTTP_STATUS.OK).json(canvases);
     } catch (err) {
-      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: 'Error fetching canvases' });
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: String(err) });
     }
   }
 
@@ -21,7 +21,7 @@ class CanvaController {
       }
       res.status(HTTP_STATUS.OK).json(canva);
     } catch (err) {
-      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: 'Error fetching canva' });
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: String(err) });
     }
   }
 
@@ -46,7 +46,7 @@ class CanvaController {
       }
       res.status(HTTP_STATUS.NO_CONTENT).json({ message: 'Canva updated successfully' });
     } catch (err) {
-      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: err.message });
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: String(err) });
     }
   }
 
@@ -59,7 +59,7 @@ class CanvaController {
       }
       res.status(HTTP_STATUS.NO_CONTENT).json({ message: 'Canva deleted successfully' });
     } catch (err) {
-      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: 'Error deleting canva' });
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: String(err) });
     }
   }
 
@@ -70,7 +70,7 @@ class CanvaController {
       const sessions = await findAllSessionByCanvaId(canva_id);
       res.status(HTTP_STATUS.OK).json(sessions);
     } catch (err) {
-      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: 'Error fetching sessions' });
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: String(err) });
     }
   }
 }

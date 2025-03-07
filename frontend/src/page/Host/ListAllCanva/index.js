@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import api_config from "../../../config/api_config";
 import { useNavigate } from "react-router";
@@ -48,12 +47,13 @@ export default function ListAllCanva() {
             if (res.ok) {
                 const newCanva = canva.filter(item => item.canva_id !== canva_id);
                 setCanva(newCanva);
-            }
-            else {
+            } else {
                 alert('Delete failed');
             }
-        }
-        )
+        }).catch(error => {
+            console.error('Error deleting canva:', error);
+            alert('Error deleting canva');
+        });
     }
 
     const handleAddCanva = () => {
@@ -65,18 +65,17 @@ export default function ListAllCanva() {
             body: JSON.stringify({
                 tieu_de: 'New canva',
             })
-        })
-            .then(async (res) => {
-                if (res.status == 404 || !res.ok) {
-                    return;
-                }
+        }).then(async (res) => {
+            if (res.ok) {
                 const data = await res.json();
                 setCanva([...canva, data]);
-            })
-            .catch((err) => {
-                console.log(err);
-                alert('Error');
-            });
+            } else {
+                alert('Add failed');
+            }
+        }).catch(error => {
+            console.error('Error adding canva:', error);
+            alert('Error adding canva');
+        });
     }
 
     const handleCreateSession = (canva_id) => {

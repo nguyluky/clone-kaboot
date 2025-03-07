@@ -1,4 +1,3 @@
-
 import {
     findAll,
     findById,
@@ -22,7 +21,7 @@ class SessionController {
             const sessions = await findAll();
             res.status(HTTP_STATUS.OK).json(sessions);
         } catch (err) {
-            res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: 'Error fetching sessions' });
+            res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: String(err) });
         }
     }
 
@@ -35,7 +34,7 @@ class SessionController {
             }
             res.status(HTTP_STATUS.OK).json(session);
         } catch (err) {
-            res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: 'Error fetching session' });
+            res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: String(err) });
         }
     }
 
@@ -52,7 +51,7 @@ class SessionController {
         } catch (err) {
             res
                 .status(HTTP_STATUS.INTERNAL_SERVER_ERROR)
-                .json({ message: 'Error fetching sessions by canva' });
+                .json({ message: String(err) });
         }
     }
 
@@ -101,7 +100,7 @@ class SessionController {
             }
             res.status(HTTP_STATUS.NO_CONTENT).json({ message: 'Session deleted successfully' });
         } catch (err) {
-            res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: 'Error deleting session' });
+            res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: String(err) });
         }
     }
 
@@ -111,7 +110,7 @@ class SessionController {
             const players = await getPlayerBySessionId(session_id);
             res.status(HTTP_STATUS.OK).json(players);
         } catch (err) {
-            res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: 'Error fetching players' });
+            res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: String(err) });
         }
     }
 
@@ -121,7 +120,7 @@ class SessionController {
             const leaderBoard = await getLeaderBoard(session_id);
             res.status(HTTP_STATUS.OK).json(leaderBoard);
         } catch (err) {
-            res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: 'Error fetching leader board' });
+            res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: String(err) });
         }
     }
 
@@ -158,7 +157,7 @@ class SessionController {
             res.status(HTTP_STATUS.OK).json(questions);
 
         } catch (err) {
-            res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: 'Error fetching question' });
+            res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: String(err) });
             console.log(err)
         }
     }

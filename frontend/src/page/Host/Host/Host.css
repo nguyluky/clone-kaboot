@@ -1,10 +1,10 @@
-.leaderboard-wrapper {
+.scoreboard-wrapper {
     width: 100%;
     display: grid;
     grid-template-rows: 50px 1fr;
 }
 
-.leaderboard__header {
+.scoreboard-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -13,16 +13,15 @@
     color: #efefef;
 }
 
-.leaderboard__header button {
+.scoreboard-header button {
     background: darkred;
     color: #efefef;
     padding: 5px 20px;
     border: none;
     border-radius: 10px;
-
 }
 
-.host {
+.host-container {
     background-image: linear-gradient(to right bottom, #4c8cec, #0080b3, #00676c, #1d4a36, #292e1d);
     height: 100vh;
     display: flex;
@@ -33,7 +32,7 @@
     scrollbar-color: gray #292e1d;
 }
 
-.host__container {
+.waiting-room-container {
     padding: 20px;
     background: #292e1d30;
     display: flex;
@@ -47,23 +46,23 @@
     margin: 10px auto;
 }
 
-.host__container img {
+.waiting-room-content img {
     width: 400px;
     height: 400px;
 }
 
-.host__container__info {
+.room-info {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.host__container__info h1 {
+.room-info h1 {
     font-size: 2.5rem;
     margin-bottom: 10px;
 }
 
-.host__container__info h2 {
+.room-info h2 {
     font-size: 3rem;
     margin-bottom: 10px;
     background-color: #292e1d;
@@ -72,7 +71,7 @@
     border: 1px solid #efefef;
 }
 
-.host__container__info button {
+.room-info button {
     background-color: #292e1d;
     color: #efefef;
     padding: 10px 20px;
@@ -81,6 +80,78 @@
     font-size: 1.5rem;
     cursor: pointer;
     transition: all 0.3s;
+}
+
+.scoreboard {
+    padding: 20px;
+    border-radius: 10px;
+    color: #efefef;
+    width: fit-content;
+    margin: 20px auto;
+    min-width: 50%;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: gray #292e1d;
+}
+
+.scoreboard h1 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.scoreboard-players {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.player-rank {
+    font-size: 1.5rem;
+    color: #efefef;
+    margin-right: 10px;
+    width: 30px;
+}
+
+.scoreboard-player {
+    display: flex;
+    align-items: center;
+    background-color: #1d1f1d;
+    padding: 10px;
+    border-radius: 10px;
+    gap: 10px;
+}
+
+.scoreboard-player img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.player-info {
+    display: flex;
+    flex-direction: column;
+    margin-right: auto;
+    margin-left: 10px;
+}
+
+.player-info h3 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.player-info h4 {
+    margin: 0;
+    font-size: 1rem;
+    color: #b3b3b3;
+}
+
+.player-score {
+    color: #efefef;
+}
+
+.player-submission-time {
+    color: #efefef;
 }
 
 .host__players {
@@ -113,91 +184,4 @@
     flex-direction: column;
     align-items: center;
     margin: 20px 0;
-}
-
-.leaderboard {
-    padding: 20px;
-    border-radius: 10px;
-    color: #efefef;
-    width: fit-content;
-    margin: 20px auto;
-    min-width: 50%;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: gray #292e1d;
-}
-
-.leaderboard h1 {
-    text-align: center;
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-}
-
-.leaderboard__players {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.leaderboard__player__stt {
-    font-size: 1.5rem;
-    color: #efefef;
-    margin-right: 10px;
-    width: 30px;
-}
-
-.leaderboard__player {
-    display: flex;
-    align-items: center;
-    background-color: #1d1f1d;
-    padding: 10px;
-    border-radius: 10px;
-    gap: 10px;
-}
-
-.leaderboard__player__avt {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.leaderboard__player__avt img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-}
-
-.leaderboard__player__info {
-    display: flex;
-    flex-direction: column;
-    margin-right: auto;
-    margin-left: 10px;
-}
-
-.leaderboard__player__info h3 {
-    margin: 0;
-    font-size: 1.2rem;
-}
-
-.leaderboard__player__info h4 {
-    margin: 0;
-    font-size: 1rem;
-    color: #b3b3b3;
-}
-
-.leaderboard__player__score {
-    /* font-size: 1.5rem; */
-    color: #efefef;
-}
-.leaderboard__clock {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #efefef;
-    padding: 10px;
-    border-radius: 10px;
-    margin: 20px auto;
-    font-size: 4rem;
-    color: #292e1d;
-    width: fit-content;
 }
