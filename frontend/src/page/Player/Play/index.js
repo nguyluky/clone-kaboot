@@ -37,10 +37,9 @@ function LeaderBoard({ session_id, user_id }) {
     }, [session_id, user_id]);
 
     return (
-                <div className='Play-leader-board' data-color-mode="light">
-
-                    <LeaderBoard_ players={players} userRank={userRank} />
-                </div>
+        <div className='Play-leader-board' data-color-mode="light">
+            <LeaderBoard_ players={players} userRank={userRank} />
+        </div>
     );
 }
 
@@ -67,7 +66,7 @@ function Question({ question, onAnswer }) {
     return (
         <div className='question-wrapper' >
             <div className='question'>
-                <MDEditor.Markdown source={question?.noi_dung} style={{ backgroundColor: "transparent", fontSize: "1.3rem", fontFamily: "Roboto" }} />
+                <MDEditor.Markdown source={question?.noi_dung} style={{ backgroundColor: "transparent", fontSize: "1.3rem", fontFamily: "Roboto", whiteSpace: 'pre-wrap', maxWidth: '100%' }} />
             </div>
             <div className='answers'>
                 {answers?.map((answer, index) => (
@@ -75,7 +74,7 @@ function Question({ question, onAnswer }) {
                         backgroundColor: colors[index]
                     }} onClick={() => onAnswer(answer)}>
                         <input type='radio' name='answer' value={answer} />
-                        <MDEditor.Markdown source={answer.noi_dung} style={{ backgroundColor: "transparent", fontSize: "1.3rem", fontFamily: "Roboto" }} />
+                        <MDEditor.Markdown source={answer.noi_dung} style={{ backgroundColor: "transparent", fontSize: "1.3rem", fontFamily: "Roboto", whiteSpace: 'pre-wrap', maxWidth: '100%' }} />
                     </div>
                 ))}
             </div>
@@ -94,16 +93,24 @@ function Result({ result }) {
 }
 
 export default function Play() {
-    const [sessionId, setSessionId] = useState(localStorage.getItem('session_id'));
+    /** @type {[string, React.Dispatch<React.SetStateAction<string>>]} */
+    const [sessionId, setSessionId] = useState(localStorage.getItem('session_id') || '');
+    /**
+     * @type {[string, React.Dispatch<React.SetStateAction<string>>]
+     */
     const [userId, setUserId] = useState(localStorage.getItem('uuid'));
     const [loading, setLoading] = useState(true);
 
+    /**
+     * @type {[{noi_dung: string, lua_chon: [], thoi_gian: number, da_tra_loi: boolean}[], React.Dispatch<React.SetStateAction<{noi_dung: string, lua_chon: [], thoi_gian: number, da_tra_loi: boolean}[]>>]}
+     */
     const [questions, setQuestions] = useState([]);
     const [answers, setAnswers] = useState([]);
     const [currentQuestion, setCurrentQuestion] = useState(-1);
 
     const [score, setScore] = useState(0);
     const [countDown, setCountDown] = useState(-1);
+    const [startTime, setStartTime] = useState(null);
     const [result, setResult] = useState(-1);
 
     const countDownRef = useRef(null);
@@ -111,7 +118,7 @@ export default function Play() {
     const nav = useNavigate();
 
     useEffect(() => {
-        fetch(apiconfig.session.getSessionById + sessionId + '/cau_hoi', {
+        fetch(apiconfig.session.getSessionById + sessionId + '/cau_hoi?user_id=' + userId, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -121,12 +128,16 @@ export default function Play() {
                 nav('/')
                 return;
             }
-            setLoading(false);
-            const data = await res.json();
-            console.log(data)
+            let data = await res.json();
             setQuestions(data);
-            setCountDown(data[0].thoi_gian);
-            setCurrentQuestion(0);
+            nextQuestion();
+            setLoading(false);
+            let currentQuestion = data.findIndex(e => !e.da_tra_loi);
+            setCurrentQuestion(currentQuestion === -1 ? data.length : currentQuestion);
+            setCountDown(data[currentQuestion]?.thoi_gian || -1);
+        }).catch(err => {
+            console.error('Error fetching questions:', err);
+            nav('/');
         })
 
 
@@ -153,6 +164,20 @@ export default function Play() {
         return () => clearInterval(countDownRef.current);
     }, [currentQuestion])
 
+    const nextQuestion = () => {
+        let nextQuestionCurr = currentQuestion + 1;
+    
+        while (nextQuestionCurr <= questions.length && questions[nextQuestionCurr]?.da_tra_loi) {
+            nextQuestionCurr++;
+        }
+
+        console.log(nextQuestionCurr)
+        console.log(questions[nextQuestionCurr])
+        setCurrentQuestion(nextQuestionCurr);
+        setCountDown(questions[nextQuestionCurr]?.thoi_gian || -1);
+        setStartTime(new Date().getTime());
+    }
+
     const handleAnswer = (answer) => {
         if (answer) {
             fetch(apiconfig.session.getSessionById + sessionId + '/tra_loi', {
@@ -163,58 +188,57 @@ export default function Play() {
                 body: JSON.stringify({
                     user_id: userId,
                     lua_chon_id: answer.lua_chon_id,
-                    thoi_gian_con_lai: countDown
+                    thoi_gian_con_lai: Math.floor(new Date().getTime() - startTime) / 10,
+                    thoi_gian_lop: new Date().getTime()
                 })
             }).then(async res => {
                 if (res.status === 200) {
                     const data = await res.json();
                     setScore(data.user.point);
                     setResult(data.dung ? 1 : 0);
-                    setTimeout(() => {
-                        setResult(-1);
-                        setCurrentQuestion(currentQuestion + 1);
-                        setCountDown(questions[currentQuestion + 1]?.thoi_gian || 0);
-                    }, 1500);
                 }
                 else {
-                    setCurrentQuestion(currentQuestion + 1);
-                    setCountDown(questions[currentQuestion + 1]?.thoi_gian || 0);
+                    setResult(0);
                 }
             }).catch(err => {
                 console.error('Error submitting answer:', err);
-                setCurrentQuestion(currentQuestion + 1);
-                setCountDown(questions[currentQuestion + 1]?.thoi_gian || 0);
+                setResult(0);
             });
         } else {
-            setCurrentQuestion(currentQuestion + 1);
-            setCountDown(questions[currentQuestion + 1]?.thoi_gian || 0);
+            setResult(0);
         }
+
+        setTimeout(() => {
+            setResult(-1);
+            nextQuestion();
+        }, 1500);
+
     }
 
     return (
 
-                            currentQuestion === questions.length ? 
-                    <LeaderBoard session_id={sessionId} user_id={userId} /> :
-        <div className='Play' data-color-mode="light">
-            <div className='play-footer'>
-                <div className='play-footer-left'>
-                    <span>Score: {score}</span>
-                    <span>Question: {Math.min(currentQuestion + 1, questions.length)}/{questions.length}</span>
+        currentQuestion === questions.length ?
+            <LeaderBoard session_id={sessionId} user_id={userId} /> :
+            <div className='Play' data-color-mode="light">
+                <div className='play-footer'>
+                    <div className='play-footer-left'>
+                        <span>Score: {score}</span>
+                        <span>Question: {Math.min(currentQuestion + 1, questions.length)}/{questions.length}</span>
+                    </div>
+                    <div className='play-footer-right'>
+                        <span>Time: {countDown}s </span>
+                    </div>
                 </div>
-                <div className='play-footer-right'>
-                    <span>Time: {countDown}s </span>
+                <div className='play-container'>
+                    {
+                        result !== -1 ?
+                            <Result result={result} /> :
+                            loading ?
+                                <Ready /> :
+                                <Question question={questions[currentQuestion]} onAnswer={handleAnswer} />
+                    }
                 </div>
             </div>
-            <div className='play-container'>
-                {
-                    result !== -1 ?
-                        <Result result={result} /> :
-                    loading ? 
-                    <Ready /> : 
-                    <Question question={questions[currentQuestion]} onAnswer={handleAnswer} />
-                }
-            </div>
-        </div>
     )
 
 }

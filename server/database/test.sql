@@ -33,6 +33,8 @@ INSERT INTO `player` (`uuid`, `session_id`, `name`, `email`, `std`, `point`, `th
 (UUID(), 1, 'Nguyen Van A', 'nguyenvana@example.com', '123456789', 50, 120, Now(), '{"answers": [1, 3]}'),
 (UUID(), 2, 'Tran Thi B', 'tranthib@example.com', '987654321', 70, 100, NOW(), '{"answers": [2, 3]}');
 
+INSERT INTO `player` (`uuid`, `session_id`, `name`, `email`, `std`, `point`, `thoi_gian_lam_bai`, `thoi_gian_voa`, `bai_lam`) VALUES
+(UUID(), 9, 'Nguyen Van A', 'asd@afd.com', '1', 0, 0, NOW(), '[]');
 
 SELECT
     *,
@@ -49,4 +51,7 @@ FROM cau_hoi WHERE canva_id = 1;
 
 
 UPDATE `lua_chon` SET noi_dung = "", dung = FALSE WHERE lua_chon_id = 1;
+
+
+SELECT *, (SELECT SUM(cau_hoi.thoi_gian) + SUM(2) FROM cau_hoi WHERE cau_hoi.canva_id = session.canva_id) as thoi_gian_lam_bai FROM session WHERE session_id = 8;
 

@@ -61,6 +61,7 @@ CREATE TABLE `player` (
     `point` INT NOT NULL DEFAULT 0,
     `thoi_gian_lam_bai` INT DEFAULT NULL,
     `thoi_gian_voa` DATETIME NOT NULL,
+    `thoi_gian_ke_thuc` DATETIME DEFAULT NULL,
     `bai_lam` JSON NOT NULL,
     FOREIGN KEY (`session_id`) REFERENCES `session` (`session_id`) ON DELETE CASCADE
 );

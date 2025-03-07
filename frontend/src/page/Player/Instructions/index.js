@@ -10,8 +10,8 @@ export default function Instructions() {
     const [loading, setLoading] = useState(false);
     const [countDown, setCountDown] = useState(-1);
     const [sl, setSl] = useState(0);
-    
-    
+
+
     const countDownInterval = useRef(null);
     const getTimeInterval = useRef(null);
 
@@ -31,15 +31,18 @@ export default function Instructions() {
             const data = await res.json();
             console.log(data.thoi_gian_bat_dau);
 
-            if (data.thoi_gian_bat_dau !== null) {
-                const now = new Date().getTime();
-                const countDownDate = new Date(data.thoi_gian_bat_dau).getTime();
-                const distance = countDownDate - now;
-                if (distance < 0) {
-                     
-                    nav('/play')
-                }
-            }
+            nav('/play');
+
+            // if (data.thoi_gian_bat_dau !== null) {
+            //     const now = new Date().getTime();
+            //     const countDownDate = new Date(data.thoi_gian_bat_dau).getTime();
+            //     const distance = countDownDate - now;
+            //     setCountDown(distance);
+            //     if (distance < 0) {
+
+            //         nav('/play')
+            //     }
+            // }
         }).catch(err => {
             console.log(err);
         })
@@ -69,21 +72,9 @@ export default function Instructions() {
             getLeaderBoard();
         }, 1000)
 
-        countDownInterval.current = setInterval(() => {
-            setCountDown(e => {
-                if (e === 0) {
-                    clearInterval(countDownInterval.current);
-                    nav('/play')
-                    return 0;
-                }
-                return
-            });
-        }, 1000);
-
         return () => {
             console.log('clear interval');
             clearInterval(getTimeInterval.current);
-            clearInterval(countDownInterval.current);
         }
     }, []);
 
@@ -110,17 +101,21 @@ export default function Instructions() {
 
             </div>
             <div className='instructions-container'>
-                <h2>Bạn đã vào phòng</h2>
-                <p>Đợi những người khác tham gia</p>
-                <form onSubmit={(e) => {
-                    e.preventDefault();
-                    console.log('Joining game', name);
-                }}
-                >
-                    <input type='text' value={name} onChange={e => setName(e.target.value)} placeholder='Name' />
-                    <br />
-                    <button type='submit'>Change Name</button>
-                </form>
+                {countDown < 10 * 1000 && countDown > -1? (<h2>Game sẽ bắt sau {Math.round(countDown / 1000)}s</h2>) :
+                    <>
+                        <h2>Bạn đã vào phòng</h2>
+                        <p>Đợi những người khác tham gia</p>
+                        <form onSubmit={(e) => {
+                            e.preventDefault();
+                            console.log('Joining game', name);
+                        }}
+                        >
+                            <input type='text' value={name} onChange={e => setName(e.target.value)} placeholder='Name' />
+                            <br />
+                            <button type='submit'>Change Name</button>
+                        </form>
+                    </>
+                }
             </div>
         </div>
     );

@@ -130,7 +130,6 @@ function CauHoi({ index, item, onChange , onDelete}) {
                         setLuaChon(newLuaChon);
                     }}/>
                     <button className='btn btn-danger' onClick={() => handleDeleteLuaChon(item.lua_chon_id)}>delete</button>
-                    <p>Lựa chọn {index + 1}</p>
                     <MDEditor value={item.noi_dung} onChange={(e) => {
                         const newLuaChon = [...lua_chon];
                         newLuaChon[index].noi_dung = e;

@@ -6,10 +6,11 @@ import './ListAllCanva.css';
 
 function randomCodeJoin() {
     let code = '';
+    const char = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz';
     for (let i = 0; i < 10; i++) {
-        code += String.fromCharCode(Math.floor(Math.random() * 26) + 65);
+        code += char.charAt(Math.floor(Math.random() * char.length));
     }
-    return code.toLocaleUpperCase();
+    return code;
 }
 
 export default function ListAllCanva() {
@@ -36,6 +37,24 @@ export default function ListAllCanva() {
             }
         })
     }, [])
+
+    const handleDeleteCanva = (canva_id) => {
+        fetch(api_config.canva.deleteCanva + canva_id, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        }).then(async (res) => {
+            if (res.ok) {
+                const newCanva = canva.filter(item => item.canva_id !== canva_id);
+                setCanva(newCanva);
+            }
+            else {
+                alert('Delete failed');
+            }
+        }
+        )
+    }
 
     const handleAddCanva = () => {
         fetch(api_config.canva.addCanva, {
@@ -109,7 +128,11 @@ export default function ListAllCanva() {
                                     e.stopPropagation()
                                     handleCreateSession(item.canva_id)
                                 }}>Tạo bài thi</button>
-                                <button className="btn btn-danger">Delete</button>
+                                <button className="btn btn-danger" onClick={e => {
+                                    e.preventDefault()
+                                    e.stopPropagation()
+                                    handleDeleteCanva(item.canva_id)
+                                }}>Delete</button>
                             </div>
                         </div>
                     ))

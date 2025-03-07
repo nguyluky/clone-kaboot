@@ -6,7 +6,7 @@ export const findAll = async () => {
 };
 
 export const findById = async (sessionId) => {
-  const [rows] = await pool.query('SELECT * FROM session WHERE session_id = ?', [sessionId]);
+  const [rows] = await pool.query('SELECT *, (SELECT SUM(cau_hoi.thoi_gian) + SUM(2) FROM cau_hoi WHERE cau_hoi.canva_id = session.canva_id) as thoi_gian_lam_bai FROM session WHERE session_id = ?;', [sessionId]);
   return rows[0] || null;
 };
 
