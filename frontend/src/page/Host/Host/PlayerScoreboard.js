@@ -38,7 +38,7 @@ function PlayerScoreboard() {
             if (response.ok) {
                 let data = await response.json();
                 data = data.sort((a, b) => {
-                    return - new Date(b.thoi_gian_ket_thuc) + new Date(a.thoi_gian_ket_thuc)
+                    return  new Date(b.thoi_gian_ket_thuc) - new Date(a.thoi_gian_ket_thuc)
                 })
                 setPlayers(data)
                 return
