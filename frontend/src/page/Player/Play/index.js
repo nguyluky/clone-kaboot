@@ -1,11 +1,11 @@
 import './Play.css';
 import React, { useState, useEffect } from 'react';
-import apiconfig from '../../../config/api_config';
+import {toast} from 'react-toastify'
+import api from '../../../services/api';
 import { useNavigate } from 'react-router';
 import Loading from './Loading';
 import CompletionMessage from './CompletionMessage';
 import QuestionDisplay from './QuestionDisplay';
-import AnswerResult from './AnswerResult';
 
 export default function Play() {
     const [sessionId] = useState(sessionStorage.getItem('session_id') || '');
@@ -25,17 +25,8 @@ export default function Play() {
 
     const fetchQuestions = async () => {
         try {
-            const res = await fetch(apiconfig.session.getSessionById + sessionId + '/cau_hoi', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            });
-            if (res.status !== 200) {
-                navigate('/');
-                return;
-            }
-            const data = await res.json();
+            const res = await api.session.getCauHoi(sessionId);
+            const data = res.data;
             setQuestions(data);
             setLoading(false);
             const currentQuestionIndex = data.findIndex(e => !e.da_tra_loi);
@@ -48,27 +39,17 @@ export default function Play() {
 
     const submitAnswers = async () => {
         try {
-            const res = await fetch(apiconfig.player.addPlayer, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    session_id: sessionId,
-                    ...player,
-                    thoi_gian_ket_thuc: new Date().toISOString(),
-                    bai_lam: answers,
-                })
+            const res = await api.player.createPlayer({
+                session_id: sessionId,
+                ...player,
+                thoi_gian_ket_thuc: new Date().toISOString(),
+                bai_lam: answers,
             });
-            if (!res.ok) {
-                console.error('Error submitting answers:', res);
-                return;
-            }
             setIsSubmitted(true);
-            const data = await res.json();
             sessionStorage.clear();
         } catch (err) {
             console.error('Error submitting answers:', err);
+            toast.error('Có lỗi xảy ra khi nộp bài, vui lòng thử lại sau');
         }
     };
 

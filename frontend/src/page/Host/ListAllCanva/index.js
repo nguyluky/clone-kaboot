@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import api_config from "../../../config/api_config";
 import { useNavigate } from "react-router";
 import './ListAllCanva.css';
+import api from "../../../services/api.js"
 
 function randomCodeJoin() {
     let code = '';
@@ -19,37 +19,20 @@ export default function ListAllCanva() {
     const nav = useNavigate();
 
     useEffect(() => {
-        fetch(api_config.canva.getAllCanva, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + localStorage.getItem("token")
-            }
-        }).then(async (res) => {
-            if (res.status === 200) {
-                const data = await res.json();
-                setCanva(data);
-                setLoading(false);
-            }
-            else {
-                alert('Login failed');
-            }
-        })
+        api.canva.getAllCanva()
+        .then(data => {
+            setCanva(data.data);
+            setLoading(false);
+        }).catch(error => {
+            console.error('Error fetching canva:', error);
+            alert('Error fetching canva');
+        });
     }, [])
 
     const handleDeleteCanva = (canva_id) => {
-        fetch(api_config.canva.deleteCanva + canva_id, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        }).then(async (res) => {
-            if (res.ok) {
-                const newCanva = canva.filter(item => item.canva_id !== canva_id);
-                setCanva(newCanva);
-            } else {
-                alert('Delete failed');
-            }
+        api.canva.deleteCanva(canva_id).then(() => {
+            const newCanva = canva.filter(item => item.canva_id !== canva_id);
+            setCanva(newCanva);
         }).catch(error => {
             console.error('Error deleting canva:', error);
             alert('Error deleting canva');
@@ -57,21 +40,8 @@ export default function ListAllCanva() {
     }
 
     const handleAddCanva = () => {
-        fetch(api_config.canva.addCanva, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                tieu_de: 'New canva',
-            })
-        }).then(async (res) => {
-            if (res.ok) {
-                const data = await res.json();
-                setCanva([...canva, data]);
-            } else {
-                alert('Add failed');
-            }
+        api.canva.createCanva({tieu_de: 'New canva'}).then(data => {
+            setCanva([...canva, data.data]);
         }).catch(error => {
             console.error('Error adding canva:', error);
             alert('Error adding canva');
@@ -79,29 +49,18 @@ export default function ListAllCanva() {
     }
 
     const handleCreateSession = (canva_id) => {
-        fetch(api_config.session.addSession, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                title: "New session", 
-                code_join: randomCodeJoin(), 
-                canva_id, 
-                thoi_gian_bat_dau: null, 
-                trang_thai: 'doi'
-            })
-
-        }).then(async (res) => {
-            if (res.ok) {
-                const data = await res.json();
-                console.log(data);
-                nav('/host/' + data.insertId);
-            }
-            else {
-                alert('Create session failed');
-            }
-        })
+        api.session.createSession({
+            title: "New session",
+            code_join: randomCodeJoin(),
+            canva_id,
+            thoi_gian_bat_dau: null,
+            trang_thai: 'doi'
+        }).then(data => {
+            nav('/host/' + data.data.insertId);
+        }).catch(error => {
+            console.error('Error creating session:', error);
+            alert('Error creating session');
+        });
     }
 
     return (

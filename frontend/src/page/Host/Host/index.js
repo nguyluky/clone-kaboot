@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
-import apiconfig from '../../../config/api_config'
 import WaitingRoom from './WaitingRoom'
 import PlayerScoreboard from './PlayerScoreboard'
+import api from '../../../services/api.js'
+
+import { ToastContainer, toast } from 'react-toastify';
 import './Host.css'
 
 export default function Host() {
@@ -13,23 +15,11 @@ export default function Host() {
 
     const fetchSession = async () => {
         try {
-            const response = await fetch(apiconfig.session.getSessionById + session_id, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            })
-
-            if (response.ok) {
-                const data = await response.json()
-                setSession(data)
-                return
-            }
-
-            navigate('/404')
+            const response = await api.session.getSessionById(session_id)
+            setSession(response.data)
         } catch (err) {
-            console.log(err)
-            navigate('/404')
+            console.error('Error fetching session:', err);
+            toast.error('Error fetching session');
         }
     }
 

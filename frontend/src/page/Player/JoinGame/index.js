@@ -1,71 +1,62 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import './JoinGame.css';
-import api_confg from '../../../config/api_config';
 import { v4 as uuidv4 } from 'uuid';
-import GameCodeInputForm from './GameCodeInputForm';
 import PlayerInfoForm from './PlayerInfoForm';
+import AnimatedNetwork from '../../../component/Background/AnimatedNetwork';
+import logo from '../../../assets/images/logo.png';
+import {toast} from 'react-toastify'
+import api from '../../../services/api';
 
 export default function JoinGame() {
     const [searchParams] = useSearchParams();
-    const [gameCode, setGameCode] = useState('');
-    const [sessionId, setSessionId] = useState('');
-    const [playerName, setPlayerName] = useState('');
-    const [playerEmail, setPlayerEmail] = useState('');
-    const [playerStd, setPlayerStd] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [canvas, setCanva] = useState([]);
 
     const navigate = useNavigate();
 
-    const checkGameCode = async (code) => {
-        setIsLoading(true);
-        fetch(api_confg.session.getSessionByCodeJoin + (code ? code : gameCode), {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        }).then(async (res) => {
-            setIsLoading(false);
-            if (res.status !== 200) {
-                alert('Game not found');
-                return;
-            }
-            const data = await res.json()
-            setSessionId(data.session_id);
-        }).catch(err => {
-            alert('error');
-            console.log(err);
-        })
-    }
-
-    const addPlayer = async () => {
+    const addPlayer = async (
+        session_id, name, email, std
+    ) => {
         setIsLoading(true);
         const uuid = uuidv4();
         sessionStorage.setItem('player', JSON.stringify({
             uuid,
-            session_id: sessionId,
-            name: playerName,
-            email: playerEmail,
-            std: playerStd,
+            session_id,
+            name,
+            email,
+            std,
             thoi_gian_vao: new Date().toISOString(),
         }));
-        sessionStorage.setItem('session_id', sessionId);
+        sessionStorage.setItem('session_code', searchParams.get('code'));
         navigate('/play');
     }
 
+    const fetchCanva = async () => {
+        try {
+            const res = await api.canva.getPublicCanva();
+            setCanva(res.data);
+        } catch (err) {
+            console.error('Error fetching canva:', err);
+            toast.error('Không tìm thấy bài kiểm tra'); 
+        }
+    }
+
     useEffect(() => {
-        if (!searchParams.get('code')) return;
-        checkGameCode(searchParams.get('code'));
-    }, [gameCode]);
+        fetchCanva();
+    }, []);
 
     return (
+
         <div className="join-game">
+            <img className='join-game__logo' src={logo}></img>
+            <AnimatedNetwork />
             <div className='join-game__wrapper'>
-                {!sessionId ? (
-                    <GameCodeInputForm gameCode={gameCode} setGameCode={setGameCode} checkGameCode={checkGameCode} />
-                ) : (
-                    <PlayerInfoForm name={playerName} setName={setPlayerName} email={playerEmail} setEmail={setPlayerEmail} std={playerStd} setStd={setPlayerStd} addPlayer={addPlayer} />
-                )}
+                <div className='join-game__title'>
+                    <h2>CYBERSOFT </h2>
+                    <p>Chào mường bạn đến bài kiểm tra</p>
+                </div>
+                <PlayerInfoForm addPlayer={addPlayer} canvas={canvas}/>
             </div>
             {
                 isLoading && (

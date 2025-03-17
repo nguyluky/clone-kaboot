@@ -1,7 +1,7 @@
 import React from 'react';
 import MDEditor from '@uiw/react-md-editor';
-import api_config from '../../../config/api_config';
 import './CanvaEdit.css';
+import api from '../../../services/api';
 
 function QuestionInfo({ index, timeLimit, setTimeLimit, handleDelete, handleSave }) {
     return (
@@ -99,57 +99,34 @@ function Question({ index, item, onChange, onDelete }) {
 }
 
 function updateQuestion(question_id, canvas_id, content, format, timeLimit) {
-    return fetch(api_config.cau_hoi.updateCauHoi + question_id, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            canva_id: canvas_id,
-            noi_dung: content,
-            dinh_dang: format,
-            thoi_gian: timeLimit
-        })
+    return api.cau_hoi.updateCauHoi({
+        cau_hoi_id: question_id,
+        canva_id: canvas_id,
+        noi_dung: content,
+        dinh_dang: format,
+        thoi_gian: timeLimit
     });
 }
 
 function updateChoice(choice) {
-    return fetch(api_config.cau_hoi.updateLuaChon + choice.lua_chon_id, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(choice)
-    });
+    return api.cau_hoi.updateLuachon(choice);
 }
 
 function deleteQuestion(question_id, onDelete) {
-    fetch(api_config.cau_hoi.deleteCauHoi + question_id, {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    })
-        .then((data) => {
-            onDelete();
-        }).catch(error => {
-            console.error(error);
-            alert('Delete fail');
-        });
+    api.cau_hoi.deleteCauHoi(question_id).then(() => {
+        onDelete(question_id);
+    }).catch(error => {
+        console.error('Error deleting question:', error);
+        alert('Delete fail');
+    });
 }
 
 function addChoice(question_id, choices, setChoices) {
-    fetch(api_config.cau_hoi.addLuaChon, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            cau_hoi_id: question_id,
-            noi_dung: '',
-            dung: false
-        })
-    }).then((res) => res.json()).then((data) => {
+    api.cau_hoi.addLuaChon({
+        cau_hoi_id: question_id,
+        noi_dung: '',
+        dung: false
+    }).then((data) => {
         setChoices([...choices || [], {
             lua_chon_id: data.insertId,
             noi_dung: '',
@@ -162,12 +139,7 @@ function addChoice(question_id, choices, setChoices) {
 }
 
 function deleteChoice(choice_id, choices, setChoices) {
-    fetch(api_config.cau_hoi.updateLuaChon + choice_id, {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    }).then((data) => {
+    api.cau_hoi.deleteCauHoi(choice_id).then(() => {
         setChoices([...choices?.filter(e => e.lua_chon_id !== choice_id)]);
     }).catch(error => {
         console.error('Error deleting choice:', error);

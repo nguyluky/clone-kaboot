@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
-import apiconfig from '../../../config/api_config'
+import api from '../../../services/api.js'
+import { ToastContainer, toast } from 'react-toastify';
 import './Host.css'
 
 function PlayerScoreboard() {
@@ -11,38 +12,24 @@ function PlayerScoreboard() {
 
     const fetchQuestions = async () => {
         try {
-            const response = await fetch(apiconfig.session.getSessionById + session_id + '/cau_hoi', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            })
-            if (response.ok) {
-                setQuestions(await response.json())
-                return
-            }
+            const response = await api.cau_hoi.getCauHoiByCanvaId(session_id)
+            setQuestions(response.data)
         } catch (err) {
             console.error('Error fetching questions:', err);
+            toast.error('Error fetching questions');
         }
     }
 
     const fetchPlayers = async () => {
         try {
-            const response = await fetch(apiconfig.session.getSessionById + session_id + '/leaderboard', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-
-            if (response.ok) {
-                let data = await response.json();
-                data = data.sort((a, b) => {
-                    return  new Date(b.thoi_gian_ket_thuc) - new Date(a.thoi_gian_ket_thuc)
-                })
-                setPlayers(data)
-                return
-            }
+            const response = await api.session.getLeaderboard(session_id)
+            let data = response.data;
+            data = data.sort((a, b) => {
+                return new Date(b.thoi_gian_ket_thuc) - new Date(a.thoi_gian_ket_thuc)
+            }).sort((a, b) => {
+                return b.point - a.point
+            }).reverse()
+            setPlayers(data)
         } catch (err) {
             console.log(err)
         }

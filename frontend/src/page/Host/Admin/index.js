@@ -1,4 +1,3 @@
-import ListAllCanva from "../ListAllCanva";
 import './Admin.css'
 import { Outlet } from "react-router";
 

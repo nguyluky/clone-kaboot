@@ -7,13 +7,6 @@ CREATE DATABASE `clone_kaboot`;
 -- Sử dụng database vừa tạo
 USE `clone_kaboot`;
 
--- Tạo bảng `account`
-CREATE TABLE `account` (
-    `user_name` VARCHAR(100) PRIMARY KEY,
-    `password` VARCHAR(255) NOT NULL,
-    `email` VARCHAR(300) NOT NULL
-);
-
 -- Tạo bảng `canva`
 CREATE TABLE `canva` (
     `canva_id` INT PRIMARY KEY AUTO_INCREMENT,
@@ -46,8 +39,8 @@ CREATE TABLE `session` (
     `title` VARCHAR(100) NOT NULL,
     `code_join` VARCHAR(10) NOT NULL,
     `canva_id` INT NOT NULL,
-    `thoi_gian_bat_dau` DATETIME DEFAULT NULL,
-    `trang_thai` ENUM('doi', 'dang_choi', 'ket_thu') NOT NULL,
+    `thoi_gian_tao` DATETIME DEFAULT NULL,
+    `is_public` BOOLEAN NOT NULL DEFAULT FALSE,
     FOREIGN KEY (`canva_id`) REFERENCES `canva` (`canva_id`) ON DELETE CASCADE
 );
 
@@ -65,5 +58,3 @@ CREATE TABLE `player` (
     FOREIGN KEY (`session_id`) REFERENCES `session` (`session_id`) ON DELETE CASCADE
 );
 
-
-INSERT INTO player(uuid, session_id, name, email, std, thoi_gian_ket_thuc, thoi_gian_vao, bai_lam, point) VALUES()

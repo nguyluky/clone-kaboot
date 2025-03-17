@@ -1,0 +1,44 @@
+
+@hostName = http://127.0.0.1:3030
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.j9ISYNXLDURR2jAVf8s1brNCqDOavJYgI4vkGa3u9IY
+
+###
+GET {{hostName}}/session
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
+GET {{hostName}}/session/1
+Authorization: Bearer {{token}}
+
+###
+POST {{hostName}}/session
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "title": "test inster 1", 
+    "canva_id": "4", 
+    "is_public": false,
+    "code_join": "123456"
+}
+
+###
+PUT {{hostName}}/session/3
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "title": "test update 1", 
+    "is_public": false
+}
+
+###
+GET {{hostName}}/session/3/leaderboard
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
+DELETE {{hostName}}/session/3
+Authorization: Bearer {{token}}
+Content-Type: application/json

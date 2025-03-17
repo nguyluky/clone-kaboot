@@ -1,0 +1,47 @@
+
+
+@hostName = http://127.0.0.1:3030
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.j9ISYNXLDURR2jAVf8s1brNCqDOavJYgI4vkGa3u9IY
+
+
+###
+GET {{hostName}}/cau_hoi
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
+GET {{hostName}}/cau_hoi/4
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
+GET {{hostName}}/cau_hoi/4/luachon
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
+POST {{hostName}}/cau_hoi/4/luachon
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "noidung": "test inster 1", 
+    "dapan": true
+}
+
+
+###
+PUT {{hostName}}/cau_hoi/4/luachon/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "noidung": "test update 1", 
+    "dapan": false
+}
+
+###
+DELETE {{hostName}}/cau_hoi/4/luachon/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+

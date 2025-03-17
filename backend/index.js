@@ -21,22 +21,22 @@ app.use(morgan('combined'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(express.json());
-app.use(cookieParser());
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.use('/accounts', AccountRoute);
+// app.use('/accounts', AccountRoute);
 app.use('/canva', CanvaRoute);
 app.use('/cau_hoi', CauHoiRoute);
 app.use('/session', SessionRoute);
 app.use('/player', PlayerRoute); // Thêm route cho player
+
+// Error handler
+app.use((err, req, res, next) => {
+  console.error(err)
+  if (err?.code == "ER_BAD_NULL_ERROR") {
+    res.status(400).send({ message: 'Bad request: ' + err.sqlMessage });
+    return
+  }
+  res.status(500).send({ message: 'Internal server error: ' + String(err) });
+})
 
 app.listen(port, (err) => {
   if (err) {

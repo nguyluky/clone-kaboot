@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import api_config from '../../../config/api_config';
+import api from '../../../services/api.js';
 
 export default function ListAllSession() {
     const { canva_id } = useParams();
@@ -10,9 +10,8 @@ export default function ListAllSession() {
 
     const getSessions = async () => {
         try {
-            const response = await fetch(api_config.canva.addCanva + '/' + canva_id + '/session');
-            const data = await response.json();
-            setdata(data);
+            const response = await api.session.getSessionsByCanvaId(canva_id);
+            setdata(response.data);
         } catch (error) {
             console.error(error);
         }
@@ -21,13 +20,6 @@ export default function ListAllSession() {
     useEffect(() => {
         getSessions();
     }, [])
-
-    //  "session_id": 10,
-    // "title": "New session",
-    // "code_join": "HKPYQBSZEU",
-    // "canva_id": 6,
-    // "thoi_gian_bat_dau": "2025-03-07T01:17:37.000Z",
-    // "trang_thai": "dang_choi"
 
     return <div>
 
