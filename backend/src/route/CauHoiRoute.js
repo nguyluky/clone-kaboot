@@ -2,6 +2,7 @@
 import CauHoiController from '../controller/CauHoiController.js';
 import express from 'express';
 import auth from '../utils/auth.js';
+import { CAU_HOI_ROUTES } from '../constants/routes.js';
 
 const router = express.Router();
 
@@ -9,18 +10,10 @@ router.use(auth.middlewareAuth)
 
 // router.get('/canva/:canva_id', CauHoiController.getCauHoiByCanvaId); // Thêm route theo canva_id
 
-router.get('/', CauHoiController.getAllCauHoi);
-router.get('/:cau_hoi_id', CauHoiController.getCauHoiById);
-router.post('/', CauHoiController.createCauHoi);
-router.put('/:cau_hoi_id', CauHoiController.updateCauHoi);
-router.delete('/:cau_hoi_id', CauHoiController.deleteCauHoi);
-
-
-// TODO:
-router.get('/:cau_hoi_id/luachon', CauHoiController.getLuaChonByCauHoiId);
-router.post('/:cau_hoi_id/luachon', CauHoiController.addLuaChon);
-router.get('/:cau_hoi_id/luachon/:lua_chon_id', CauHoiController.getLuaChonById);
-router.put('/:cau_hoi_id/luachon/:lua_chon_id', CauHoiController.updateLuaChon);
-router.delete('/:cau_hoi_id/luachon/:lua_chon_id', CauHoiController.deleteLuaChon);
+router.get(CAU_HOI_ROUTES.BASE, CauHoiController.getAllCauHoi);
+router.get(CAU_HOI_ROUTES.BY_ID, CauHoiController.getCauHoiById);
+router.post(CAU_HOI_ROUTES.BASE, CauHoiController.createCauHoi);
+router.put(CAU_HOI_ROUTES.BY_ID, CauHoiController.updateCauHoi);
+router.delete(CAU_HOI_ROUTES.BY_ID, CauHoiController.deleteCauHoi);
 
 export default router;

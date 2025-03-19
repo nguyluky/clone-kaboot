@@ -1,118 +1,91 @@
-// src/controller/CanvaController.js
-import * as CanvaModule from '../model/canvaModel.js';
+import CanvaModule from '../model/canvaModel.js';
 import HTTP_STATUS from '../constants/httpStatus.js';
-import auth from '../utils/auth.js';
-import express from 'express'
+import SessionModel from '../model/SessionModel.js';
+import CauHoiModel from '../model/CauHoiModel.js';
+import { DocumentNotFoundError } from '../utils/error.js';
 
-class CanvaController {
-
-    /**
-     * 
-     * @param {express.Response} req 
-     * @param {express.Response} res 
-     * @param {express.NextFunction} next 
-     */
-    async getAllCanva(req, res, next) {
+/** @type {import('../utils/help.js').CanvaControllerInterface} */
+const CanvaController = {
+    getAll: async (req, res, next) => {
 
         try {
-            let canvases = await CanvaModule.findAll();
+            let canvases = await CanvaModule.getAll();
             res.status(HTTP_STATUS.OK).json(canvases);
         } catch (err) {
             next(err);
         }
-    }
-
-    /**
-     * 
-     * @param {express.Response} req 
-     * @param {express.Response} res 
-     * @param {express.NextFunction} next 
-     */
-    async getCanvaById(req, res, next) {
+    },
+    getById: async (req, res, next) => {
         try {
             const { canva_id } = req.params;
-            const canva = await CanvaModule.findById(canva_id);
+            const canva = await CanvaModule.findById(+canva_id);
             if (!canva) {
-                return res.status(HTTP_STATUS.NOT_FOUND).json({ message: 'Canva not found' });
+                throw new DocumentNotFoundError('Canva not found');
             }
             res.status(HTTP_STATUS.OK).json(canva);
         } catch (err) {
             next(err);
         }
-    }
-
-    /**
-     * 
-     * @param {express.Response} req 
-     * @param {express.Response} res 
-     * @param {express.NextFunction} next 
-     */
-    async createCanva(req, res, next) {
+    },
+    createCanva: async (req, res, next) => {
         try {
             const { tieu_de } = req.body;
             const ngay_tao = new Date();
-            const canva = await CanvaModule.createCanva({ tieu_de, ngay_tao , is_public: false});
+            const canva = await CanvaModule.create({ tieu_de, ngay_tao , is_public: false});
             res.status(HTTP_STATUS.CREATED).json(canva);
         } catch (err) {
             next(err);
         }
-    }
-
-    /**
-     * 
-     * @param {express.Response} req 
-     * @param {express.Response} res 
-     * @param {express.NextFunction} next 
-     */
+    },
     async updateCanva(req, res, next) {
         try {
             const { canva_id } = req.params;
             const { tieu_de, is_public} = req.body;
-            const result = await CanvaModule.updateCanva(canva_id, { tieu_de, is_public});
+            const result = await CanvaModule.update(canva_id, { tieu_de, is_public});
             if (result.affectedRows === 0) {
-                return res.status(HTTP_STATUS.NOT_FOUND).json({ message: 'Canva not found' });
+                throw new DocumentNotFoundError('Canva not found');
             }
-            res.status(HTTP_STATUS.NO_CONTENT).json({ message: 'Canva updated successfully' });
+            res.status(HTTP_STATUS.NO_CONTENT).json(result);
         } catch (err) {
             next(err);
         }
-    }
-
-    /**
-     * 
-     * @param {express.Response} req 
-     * @param {express.Response} res 
-     * @param {express.NextFunction} next 
-     */
+    },
     async deleteCanva(req, res, next) {
         try {
             const { canva_id } = req.params;
-            const result = await CanvaModule.deleteCanva(canva_id);
+            const result = await CanvaModule.delete(canva_id);
             if (result.affectedRows === 0) {
-                return res.status(HTTP_STATUS.NOT_FOUND).json({ message: 'Canva not found' });
+                throw new DocumentNotFoundError('Canva not found');
             }
-            res.status(HTTP_STATUS.NO_CONTENT).json({ message: 'Canva deleted successfully' });
+            res.status(HTTP_STATUS.NO_CONTENT).json(result);
         } catch (err) {
             next(err);
         }
-    }
-
-    /**
-     * 
-     * @param {express.Response} req 
-     * @param {express.Response} res 
-     * @param {express.NextFunction} next 
-     */
+    },
     async getAllSessionByCanvaId(req, res, next) {
         try {
             const { canva_id } = req.params;
-            console.log(canva_id);
-            const sessions = await CanvaModule.findAllSessionByCanvaId(canva_id);
+            const sessions = await SessionModel.getByCanvaId(canva_id);
+            if (sessions.length === 0) {
+                throw new DocumentNotFoundError('No sessions found for this canva');
+            }
             res.status(HTTP_STATUS.OK).json(sessions);
+        } catch (err) {
+            next(err);
+        }
+    },
+    async getAllCauHoiByCanvaId(req, res, next) {
+        try {
+            const { canva_id } = req.params;
+            const cauhois = await CauHoiModel.getByCanvaId(canva_id);
+            if (cauhois.length === 0) {
+                throw new DocumentNotFoundError('No questions found for this canva');
+            }
+            res.status(HTTP_STATUS.OK).json(cauhois);
         } catch (err) {
             next(err);
         }
     }
 }
 
-export default new CanvaController();
+export default CanvaController;

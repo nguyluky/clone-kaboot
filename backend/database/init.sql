@@ -50,7 +50,7 @@ CREATE TABLE `player` (
     `session_id` INT NOT NULL,
     `name` VARCHAR(30) NOT NULL,
     `email` VARCHAR(300) NOT NULL,
-    `std` VARCHAR(12) NOT NULL,
+    `sdt` VARCHAR(12) NOT NULL,
     `point` INT NOT NULL DEFAULT 0,
     `thoi_gian_vao` DATETIME NOT NULL,
     `thoi_gian_ket_thuc` DATETIME DEFAULT NULL,

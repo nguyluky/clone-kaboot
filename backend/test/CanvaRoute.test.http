@@ -17,7 +17,7 @@ Content-Type: application/json
 }
 
 ###
-GET {{hostName}}/canva/1
+GET {{hostName}}/canva/100
 Authorization: Bearer {{token}}
 Content-Type: application/json
 

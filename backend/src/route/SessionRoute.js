@@ -2,21 +2,22 @@
 import SessionController from '../controller/SessionController.js';
 import express from 'express';
 import auth from '../utils/auth.js';
+import { SESSION_ROUTES } from '../constants/routes.js';
 
 const router = express.Router();
 
 // router.get('/canva/:canva_id', auth.middlewareAuth, SessionController.getSessionsByCanvaId); // Thêm route theo canva_id
-router.get('/code/:code_join', SessionController.getSessionByCodeJoin); // Thêm route theo code_join
-router.get('/code/:code_join/cau_hoi', SessionController.getQuestion);
-router.get('/code/:code_join/nop_bai', SessionController.nopBai);
-router.get('/public', SessionController.getAllPublicSessions);
+router.get(SESSION_ROUTES.BY_CODE_JOIN,   SessionController.getSessionByCodeJoin); // Thêm route theo code_join
+router.get(SESSION_ROUTES.QUESTION,       SessionController.getQuestion);
+router.post(SESSION_ROUTES.SUBMIT_ANSWER, SessionController.submitAnswers);
+router.get(SESSION_ROUTES.PUBLIC,         SessionController.getAllPublicSessions);
 
 // admin
-router.get('/', auth.middlewareAuth ,SessionController.getAllSessions);
-router.get('/:session_id', auth.middlewareAuth, SessionController.getSessionById);
-router.post('/', SessionController.createSession);
-router.put('/:session_id', SessionController.updateSession);
-router.get('/:session_id/leaderboard', SessionController.getLeaderBoard);
-router.delete('/:session_id', SessionController.deleteSession);
+router.get(SESSION_ROUTES.BASE, auth.middlewareAuth ,SessionController.getAllSessions);
+router.get(SESSION_ROUTES.BY_ID, auth.middlewareAuth, SessionController.getSessionById);
+router.put(SESSION_ROUTES.BY_ID, auth.middlewareAuth, SessionController.updateSession);
+router.delete(SESSION_ROUTES.BY_ID,auth.middlewareAuth, SessionController.deleteSession);
+router.post(SESSION_ROUTES.BASE, auth.middlewareAuth, SessionController.createSession);
+router.get(SESSION_ROUTES.LEADERBOARD,auth.middlewareAuth, SessionController.getLeaderBoard);
 
 export default router;

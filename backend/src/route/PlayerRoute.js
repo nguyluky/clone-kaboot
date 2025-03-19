@@ -2,17 +2,16 @@
 import PlayerController from '../controller/PlayerController.js';
 import express from 'express';
 import auth from '../utils/auth.js';
+import { PLAYER_ROUTES } from '../constants/routes.js';
 
 const router = express.Router();
 
 router.use(auth.middlewareAuth)
 
-router.get('/', PlayerController.getAllPlayers);
-router.get('/:uuid', PlayerController.getPlayerById);
-// TODO: 17-3-25: chuyển endpoint này sang sesionRoute
-// router.get('/session/:session_id', PlayerController.getPlayersBySessionId); // Thêm route theo session_id
-router.post('/', PlayerController.createPlayer);
-router.put('/:uuid', PlayerController.updatePlayer);
-router.delete('/:uuid', PlayerController.deletePlayer);
+router.get(PLAYER_ROUTES.BASE, PlayerController.getAllPlayers);
+router.get(PLAYER_ROUTES.BY_ID, PlayerController.getPlayerById);
+router.post(PLAYER_ROUTES.BASE, PlayerController.createPlayer);
+router.put(PLAYER_ROUTES.BY_ID, PlayerController.updatePlayer);
+router.delete(PLAYER_ROUTES.BY_ID, PlayerController.deletePlayer);
 
 export default router;

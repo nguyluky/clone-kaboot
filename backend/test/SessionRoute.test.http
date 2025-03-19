@@ -42,3 +42,41 @@ Content-Type: application/json
 DELETE {{hostName}}/session/3
 Authorization: Bearer {{token}}
 Content-Type: application/json
+
+
+###
+GET {{hostName}}/session/public
+
+###
+GET {{hostName}}/session/code/123456
+
+###
+GET {{hostName}}/session/code/123456/cau_hoi
+
+###
+POST {{hostName}}/session/code/123456/nop_bai
+Content-Type: application/json
+
+{
+    "player": {
+        "name": "test player 1",
+        "email": "a@b.com",
+        "sdt": "1234567890",
+        "thoi_gian_vao": "{{$datetime iso8601}}"
+    },
+    "answers": [
+        {
+            "question_id": 1,
+            "answer_id": 1,
+            "thoi_gian_nop": "{{$datetime iso8601}}",
+            "thoi_gian_con_lai": 0
+        },
+        {
+            "question_id": 2,
+            "answer_id": 2,
+            "thoi_gian_nop": "{{$datetime iso8601}}",
+            "thoi_gian_con_lai": 0
+        }
+    ]
+}
+

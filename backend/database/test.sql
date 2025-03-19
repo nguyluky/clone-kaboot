@@ -128,3 +128,41 @@ INSERT INTO `player` (`uuid`, `session_id`, `name`, `email`, `std`, `point`, `th
 ('l2m3n4o5-p6q7-r8s9-t0u1-v2w3x4y5z6a7', 4, 'Dương Thị M', 'duongthim@gmail.com', '20210012', 650, '2023-05-12 10:10:00', '2023-05-12 10:40:00', '{"answers": [{"question_id": 10, "choice_id": 37}, {"question_id": 11, "choice_id": 41}]}'),
 ('m3n4o5p6-q7r8-s9t0-u1v2-w3x4y5z6a7b8', 4, 'Lý Văn N', 'lyvann@gmail.com', '20210013', 700, '2023-05-12 10:12:00', '2023-05-12 10:38:00', '{"answers": [{"question_id": 10, "choice_id": 37}, {"question_id": 11, "choice_id": 41}]}'),
 ('n4o5p6q7-r8s9-t0u1-v2w3-x4y5z6a7b8c9', 4, 'Phan Thị O', 'phanthio@gmail.com', '20210014', 600, '2023-05-12 10:14:00', '2023-05-12 10:42:00', '{"answers": [{"question_id": 10, "choice_id": 37}, {"question_id": 11, "choice_id": 40}]}');
+
+
+
+-- SELECT * FROM `lua_chon` JOIN `cau_hoi` ON `lua_chon`.`cau_hoi_id` = `cau_hoi`.`id`:
+SELECT lua_chon.* FROM `lua_chon` JOIN `cau_hoi` on lua_chon.cau_hoi_id = cau_hoi.cau_hoi_id WHERE cau_hoi.canva_id = 4;
+
+-- output: {
+--     "cau_hoi_id": 4,
+--     "noi_dung": "Ai là tác giả của Truyện Kiều?",
+--     "dinh_dang": "htmldecode",
+--     "thoi_gian": 30,
+--     "lua_chon": [
+--         {
+--             "lua_chon_id": 10,
+--             "noi_dung": "Nguyễn Du",
+--             "dung": true
+--         },
+--         {
+--             "lua_chon_id": 11,
+--             "noi_dung": "Hồ Xuân Hương",
+--             "dung": false
+--         },
+--       ]
+--     }
+SELECT 
+    `cau_hoi`.*,  
+    (
+        SELECT JSON_ARRAYAGG(
+            JSON_OBJECT(
+                'lua_chon_id', `lua_chon`.`lua_chon_id`,
+                'noi_dung', `lua_chon`.`noi_dung`,
+                'dung', `lua_chon`.`dung`
+            )
+        )
+        FROM `lua_chon` 
+        WHERE `lua_chon`.`cau_hoi_id` = `cau_hoi`.`cau_hoi_id`
+    ) as lua_chon
+FROM `cau_hoi` WHERE `cau_hoi`.`canva_id` = 4;
