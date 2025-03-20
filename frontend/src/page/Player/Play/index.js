@@ -1,7 +1,7 @@
 import './Play.css';
 import React, { useState, useEffect } from 'react';
 import {toast} from 'react-toastify'
-import api from '../../../services/api';
+// import api from '../../../services/api';
 import Loading from './Loading';
 import CompletionMessage from './CompletionMessage';
 import QuestionDisplay from './QuestionDisplay';
@@ -40,27 +40,27 @@ export default function Play() {
     }, []);
 
     const fetchQuestions = async () => {
-        try {
-            const res = await api.sessionApi.getQuestions(code);
-            setQuestions(res);
-            setLoading(false);
-        } catch (err) {
-            console.error('Error fetching questions:', err);
-        }
+        // try {
+        //     const res = await api.sessionApi.getQuestions(code);
+        //     setQuestions(res);
+        //     setLoading(false);
+        // } catch (err) {
+        //     console.error('Error fetching questions:', err);
+        // }
     };
 
     const submitAnswers = async () => {
-        try {
-            const res = await api.sessionApi.submitAnswers(code, {
-                player: player,
-                answers: answers
-            });
-            setIsSubmitted(true);
-            sessionStorage.clear();
-        } catch (err) {
-            console.error('Error submitting answers:', err);
-            // toast.error('Có lỗi xảy ra khi nộp bài, vui lòng thử lại sau');
-        }
+        // try {
+        //     const res = await api.sessionApi.submitAnswers(code, {
+        //         player: player,
+        //         answers: answers
+        //     });
+        //     setIsSubmitted(true);
+        //     sessionStorage.clear();
+        // } catch (err) {
+        //     console.error('Error submitting answers:', err);
+        //     // toast.error('Có lỗi xảy ra khi nộp bài, vui lòng thử lại sau');
+        // }
     };
 
     const saveAnswer = (answer) => {

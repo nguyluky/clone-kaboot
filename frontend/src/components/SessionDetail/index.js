@@ -3,78 +3,50 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, T
 import { Bar, Pie } from 'react-chartjs-2';
 import './SessionDetail.css';
 import { useNavigate, useParams } from 'react-router';
+import api from '../../services/fakeApi';
+import Loading from '../../components/common/Loading';
+import Error from '../../components/common/Error';
 
 // Register ChartJS components
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend);
 
 // Sample data for demonstration
-const sampleSessionDetail = {
-  id: 1,
-  name: 'Marketing Class 101',
-  quiz: 'Marketing Quiz',
-  date: '2023-08-15',
-  time: '10:30 AM',
-  duration: '45 min',
-  host: 'John Smith',
-  participants: [
-    { id: 1, name: 'Alice Johnson', score: 92, correct: 11, incorrect: 1, rank: 1 },
-    { id: 2, name: 'Bob Williams', score: 85, correct: 10, incorrect: 2, rank: 2 },
-    { id: 3, name: 'Charlie Brown', score: 77, correct: 9, incorrect: 3, rank: 3 },
-    { id: 4, name: 'David Miller', score: 70, correct: 8, incorrect: 4, rank: 4 },
-    { id: 5, name: 'Eva Davis', score: 62, correct: 7, incorrect: 5, rank: 5 },
-    { id: 6, name: 'Frank Wilson', score: 54, correct: 6, incorrect: 6, rank: 6 },
-  ],
-  questions: [
-    {
-      id: 1,
-      question: 'What is the 4 Ps of Marketing?',
-      correctAnswer: 'Price, Product, Promotion, Place',
-      correctPercentage: 83,
-      avgResponseTime: 12.4,
-      distribution: [
-        { answer: 'Price, Product, Promotion, Place', count: 20, isCorrect: true },
-        { answer: 'People, Process, Product, Price', count: 3, isCorrect: false },
-        { answer: 'Promotion, Place, People, Process', count: 1, isCorrect: false },
-        { answer: 'Product, Price, Process, People', count: 0, isCorrect: false }
-      ]
-    },
-    {
-      id: 2,
-      question: 'Which of these is NOT a marketing strategy?',
-      correctAnswer: 'Financial Marketing',
-      correctPercentage: 62,
-      avgResponseTime: 18.7,
-      distribution: [
-        { answer: 'Outbound Marketing', count: 2, isCorrect: false },
-        { answer: 'Inbound Marketing', count: 3, isCorrect: false },
-        { answer: 'Content Marketing', count: 4, isCorrect: false },
-        { answer: 'Financial Marketing', count: 15, isCorrect: true }
-      ]
-    },
-    {
-      id: 3,
-      question: 'Digital marketing is more effective than traditional marketing in all scenarios.',
-      correctAnswer: 'False',
-      correctPercentage: 75,
-      avgResponseTime: 8.1,
-      distribution: [
-        { answer: 'True', count: 6, isCorrect: false },
-        { answer: 'False', count: 18, isCorrect: true }
-      ]
-    }
-  ],
-  stats: {
-    avgScore: 78,
-    avgTimePerQuestion: 13.1,
-    totalParticipants: 24,
-    completionRate: 100,
-  }
-};
 
 export default function SessionDetail() {
   const [activeTab, setActiveTab] = useState('overview');
   const navigate = useNavigate();
   const { id: sessionId } = useParams();
+  const [sampleSessionDetail, setSampleSessionDetail] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchSessionData = () => {
+    setLoading(true);
+    setError(null);
+    api.getSessionDetail()
+      .then(setSampleSessionDetail)
+      .catch(setError)
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchSessionData();
+  }, []);
+
+  if (loading) {
+    return <Loading message="Loading session data" subMessage="Please wait while we fetch the details" />;
+  }
+
+  if (error) {
+    return (
+      <Error
+        title="Unable to load session data"
+        message={error.message || "Failed to load session details. Please try again."}
+        onRetry={fetchSessionData}
+        onBack={() => navigate(-1)}
+      />
+    );
+  }
   
   // Prepare chart data
   const scoreDistribution = {
@@ -251,7 +223,9 @@ export default function SessionDetail() {
                 <div className="chart-wrapper">
                   <h4>Score Distribution</h4>
                   <div className="chart-item">
-                    <Bar data={scoreDistribution} options={chartOptions} />
+                    <Bar data={scoreDistribution} 
+// @ts-ignore
+                    options={chartOptions} />
                   </div>
                 </div>
                 <div className="chart-wrapper">
@@ -290,7 +264,9 @@ export default function SessionDetail() {
                   options={{
                     ...chartOptions,
                     plugins: {
-                      ...chartOptions.plugins,
+                      legend: {
+                        position: 'top',
+                      },
                       title: {
                         display: true,
                         text: 'Response Time by Question'

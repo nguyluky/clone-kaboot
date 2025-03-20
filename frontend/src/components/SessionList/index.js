@@ -1,68 +1,46 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import './SessionList.css';
+import api from '../../services/fakeApi';
+import Loading from '../common/Loading';
+import Error from '../../components/common/Error';
 
 // Sample data for demonstration
-const sampleSessions = [
-  { 
-    id: 1, 
-    name: 'Marketing Class 101', 
-    quiz: 'Marketing Quiz', 
-    date: '2023-08-15', 
-    time: '10:30 AM',
-    participants: 24, 
-    avgScore: 78,
-    duration: '45 min'
-  },
-  { 
-    id: 2, 
-    name: 'JavaScript Workshop', 
-    quiz: 'JavaScript Fundamentals', 
-    date: '2023-08-10', 
-    time: '2:00 PM',
-    participants: 32, 
-    avgScore: 65,
-    duration: '60 min'
-  },
-  { 
-    id: 3, 
-    name: 'Geography Finals', 
-    quiz: 'World Geography', 
-    date: '2023-08-05', 
-    time: '9:15 AM',
-    participants: 45, 
-    avgScore: 82,
-    duration: '50 min'
-  },
-  { 
-    id: 4, 
-    name: 'Team Building Event', 
-    quiz: 'Pop Culture 2023', 
-    date: '2023-07-28', 
-    time: '3:30 PM',
-    participants: 18, 
-    avgScore: 91,
-    duration: '30 min'
-  },
-  { 
-    id: 5, 
-    name: 'Science Class 10B', 
-    quiz: 'Science Quiz', 
-    date: '2023-07-20', 
-    time: '11:00 AM',
-    participants: 29, 
-    avgScore: 73,
-    duration: '40 min'
-  },
-];
 
 export default function SessionList() {
   const [viewMode, setViewMode] = useState('table'); // 'table' or 'cards'
   const navigate = useNavigate();
+  const [sampleSessions, setSampleSessionDetails] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const loadData = () => {
+    api.getSessions().then(setSampleSessionDetails).catch(setError).finally(() => setLoading(false));
+  }
+    
+  useEffect(() => {
+    loadData();
+  }, []);
   
   const handleViewSessionDetails = (id) => {
     navigate(`/admin/report/${id}`);
   };
+
+      if (loading) {
+        return <Loading message="Loading dashboard" subMessage="Fetching your quizzes and activity data" />;
+    }
+
+    if (error) {
+        return (
+            <Error
+                title="Dashboard data unavailable"
+                message={error}
+                onRetry={loadData}
+                onBack={() => navigate('/')}
+            />
+        );
+    }
+
 
   return (
     <div className="sessions-container">

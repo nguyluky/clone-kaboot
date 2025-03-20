@@ -14,6 +14,7 @@ import SessionReportDetail from './page/Host/Admin/SessionReportDetail';
 import ParticipantReportDetail from './page/Host/Admin/ParticipantReportDetail';
 import SessionStart from './page/Host/SessionStart';
 import SessionLobby from './page/Host/SessionLobby';
+import Error from './components/common/Error';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
         <Route path='report' element={<SessionList/>}/>
         <Route path='report/:id' element={<SessionReportDetail/>}/>
         <Route path='report/:sessionId/participant/:participantId' element={<ParticipantReportDetail/>}/>
+        <Route path='*' element={Error({title: 'Not Found', message: 'The page you are looking for does not exist', onBack: () => {}})}/>
       </Route>
       <Route path='/canva/new' element={<CanvaEdit />}/>
       <Route path='/canva/edit/:id' element={<CanvaEdit />}/>

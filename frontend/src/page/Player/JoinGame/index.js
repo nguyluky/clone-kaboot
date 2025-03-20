@@ -6,7 +6,7 @@ import PlayerInfoForm from './PlayerInfoForm';
 import AnimatedNetwork from '../../../components/Background/AnimatedNetwork';
 import logo from '../../../assets/images/logo.png';
 import {toast} from 'react-toastify'
-import api from '../../../services/api';
+// import api from '../../../services/api';
 
 export default function JoinGame() {
     const [searchParams] = useSearchParams();
@@ -31,13 +31,13 @@ export default function JoinGame() {
     }
 
     const fetchCanva = async () => {
-        try {
-            const res = await api.sessionApi.getPublicSessions();
-            setPublicSession(res);
-        } catch (err) {
-            console.error('Error fetching canva:', err);
-            toast.error('Không tìm thấy bài kiểm tra'); 
-        }
+        // try {
+        //     const res = await api.sessionApi.getPublicSessions();
+        //     setPublicSession(res);
+        // } catch (err) {
+        //     console.error('Error fetching canva:', err);
+        //     toast.error('Không tìm thấy bài kiểm tra'); 
+        // }
     }
 
     useEffect(() => {

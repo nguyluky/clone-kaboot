@@ -1,6 +1,5 @@
 
-
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 
 const AnimatedNetwork = () => {
     const canvasRef = useRef(null);

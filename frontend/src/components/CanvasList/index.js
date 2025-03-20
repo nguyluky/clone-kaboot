@@ -1,19 +1,27 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import './CanvasList.css';
+import api from '../../services/fakeApi.js';
+import Loading from '../common/Loading/index.js';
+import Error from '../common/Error/index.js';
 
-// Sample data for demonstration
-const sampleCanvases = [
-  { id: 1, title: 'Marketing Quiz', category: 'Business', questions: 12, lastModified: '2023-08-15' },
-  { id: 2, title: 'JavaScript Fundamentals', category: 'Programming', questions: 20, lastModified: '2023-08-10' },
-  { id: 3, title: 'World Geography', category: 'Education', questions: 15, lastModified: '2023-08-05' },
-  { id: 4, title: 'Pop Culture 2023', category: 'Entertainment', questions: 18, lastModified: '2023-07-28' },
-  { id: 5, title: 'Science Quiz', category: 'Education', questions: 25, lastModified: '2023-07-20' },
-  { id: 6, title: 'History Timeline', category: 'Education', questions: 22, lastModified: '2023-07-15' },
-];
+
+/**
+ * 
+ * @typedef {Object} Canvas
+ * @property {number} id - The unique identifier of the canvas
+ * @property {string} title - The title of the canvas
+ * @property {string} category - The category of the canvas
+ * @property {number} questions - The number of questions in the canvas
+ * @property {string} lastModified - The date when the canvas was last modified
+ */
 
 export default function CanvasList() {
   const navigate = useNavigate();
+  /** @type {useStateReturnType<Canvas[]>} */
+  const [canvases, setCanvases] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [error, setError] = React.useState(null);
 
   const handleCreateCanvas = () => {
     navigate('/canva/new');
@@ -26,6 +34,15 @@ export default function CanvasList() {
   const handleViewCanvas = (id) => {
     navigate(`/admin/canva/${id}`);
   };
+
+  const loadData = () => api.getCanvasList().then(setCanvases).catch(setError).finally(() => setIsLoading(false));
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  if (isLoading) return Loading({ message: 'Loading canvases', subMessage: 'Fetching your canvases' });
+  if (error) return Error({ title: 'Canvas data unavailable', message: error, onRetry: loadData, onBack: () => navigate('/') });
 
   return (
     <div className="canvases-container">
@@ -57,7 +74,7 @@ export default function CanvasList() {
       </div>
       
       <div className="canvas-grid">
-        {sampleCanvases.map(canvas => (
+        {canvases.map(canvas => (
           <div className="canvas-card" key={canvas.id} onClick={() => handleViewCanvas(canvas.id)}>
             <div className="canvas-card-header">
               <span className="canvas-category">{canvas.category}</span>

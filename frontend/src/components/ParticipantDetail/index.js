@@ -1,66 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import './ParticipantDetail.css';
+import api from '../../services/fakeApi';
 
-// Sample data for demonstration
-const sampleParticipantDetail = {
-  id: 1,
-  name: 'Alice Johnson',
-  score: 92,
-  rank: 1,
-  correctAnswers: 11,
-  incorrectAnswers: 1,
-  averageResponseTime: 8.3,
-  sessionName: 'Marketing Class 101',
-  quizName: 'Marketing Quiz',
-  date: '2023-08-15',
-  totalQuestions: 12,
-  answers: [
-    {
-      questionId: 1,
-      questionText: 'What is the 4 Ps of Marketing?',
-      correctAnswer: 'Price, Product, Promotion, Place',
-      participantAnswer: 'Price, Product, Promotion, Place',
-      isCorrect: true,
-      responseTime: 7.2,
-      points: 100
-    },
-    {
-      questionId: 2,
-      questionText: 'Which of these is NOT a marketing strategy?',
-      correctAnswer: 'Financial Marketing',
-      participantAnswer: 'Financial Marketing',
-      isCorrect: true,
-      responseTime: 12.5,
-      points: 75
-    },
-    {
-      questionId: 3,
-      questionText: 'Digital marketing is more effective than traditional marketing in all scenarios.',
-      correctAnswer: 'False',
-      participantAnswer: 'False',
-      isCorrect: true,
-      responseTime: 5.3,
-      points: 50
-    },
-    // Adding a sample incorrect answer
-    {
-      questionId: 4,
-      questionText: 'What is the primary goal of content marketing?',
-      correctAnswer: 'Provide value to attract and engage a target audience',
-      participantAnswer: 'Directly sell products through content',
-      isCorrect: false,
-      responseTime: 9.8,
-      points: 0
-    }
-  ]
-};
 
 export default function ParticipantDetail({ participantId }) {
   // In a real app, you would fetch participant data based on participantId
-  const participant = sampleParticipantDetail;
+  const [participant, setParticipant] = useState({});
   const [activeTab, setActiveTab] = useState('summary');
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
   
-  // Calculate participant stats
+
+  useEffect(() => {
+    api.getParticipantDetail().then(setParticipant).catch(setError).finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return <div className="participant-detail-container">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="participant-detail-container">An error occurred: {error}</div>;
+  }
+
+    // Calculate participant stats
   const accuracy = ((participant.correctAnswers / participant.totalQuestions) * 100).toFixed(1);
   const fastestAnswer = Math.min(...participant.answers.map(a => a.responseTime)).toFixed(1);
   const slowestAnswer = Math.max(...participant.answers.map(a => a.responseTime)).toFixed(1);
@@ -182,7 +145,7 @@ export default function ParticipantDetail({ participantId }) {
                       <div className="answer-value correct">{answer.correctAnswer}</div>
                     </div>
                     <div className="answer-row">
-                      <div className="answer-label">Participant's Answer:</div>
+                      <div className="answer-label">Participant{"'"}s Answer:</div>
                       <div className={`answer-value ${answer.isCorrect ? 'correct' : 'incorrect'}`}>
                         {answer.participantAnswer}
                       </div>
