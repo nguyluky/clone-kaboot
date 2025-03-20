@@ -15,33 +15,17 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 ###
-GET {{hostName}}/cau_hoi/4/luachon
-Authorization: Bearer {{token}}
-Content-Type: application/json
-
-###
-POST {{hostName}}/cau_hoi/4/luachon
+POST {{hostName}}/cau_hoi/4/lua_chon
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-    "noidung": "test inster 1", 
-    "dapan": true
-}
-
-
-###
-PUT {{hostName}}/cau_hoi/4/luachon/1
-Authorization: Bearer {{token}}
-Content-Type: application/json
-
-{
-    "noidung": "test update 1", 
-    "dapan": false
+    "noi_dung": "test inster 1", 
+    "dung": true
 }
 
 ###
-DELETE {{hostName}}/cau_hoi/4/luachon/1
+DELETE {{hostName}}/cau_hoi/4/lua_chon/1
 Authorization: Bearer {{token}}
 Content-Type: application/json
 

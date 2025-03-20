@@ -35,15 +35,9 @@ export default class BaseModel {
      * @returns {Promise<ResultSetHeader>}
      */
     async create(data) {
-        const [result] = await this.__query(
-            `INSERT INTO ${this.tableName}( `
-            + Object.keys(data).map((e) => `${pool.escapeId(e)}`).join(', ') +
-            ') VALUES ('+ Object.keys(data).map(() => '?').join(', ') + ')',
-            [...Object.values(data)]
-        );
+        const [result] = await this.__query(`INSERT INTO ${this.tableName} SET ?`, data);
         return /** @type {ResultSetHeader} */ (result);
     }
-
 
     /**
      * 

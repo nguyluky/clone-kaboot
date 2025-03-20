@@ -1,0 +1,32 @@
+.canvas-details-page {
+  padding: 20px;
+}
+
+.canvas-details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.canvas-details-header h1 {
+  margin: 0;
+  font-size: 28px;
+  color: #2c3e50;
+}
+
+.back-button {
+  background: none;
+  border: none;
+  color: #3498db;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: color 0.3s;
+}
+
+.back-button:hover {
+  color: #2980b9;
+}

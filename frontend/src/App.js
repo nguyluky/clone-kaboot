@@ -1,15 +1,19 @@
-
 import React from 'react';
 import { Routes, Route } from "react-router";
 import JoinGame from './page/Player/JoinGame';
 import './App.css';
 import Play from './page/Player/Play';
-import ListAllCanva from './page/Host/ListAllCanva';
 import Admin from './page/Host/Admin';
 import CanvaEdit from './page/Host/CanvaEdit';
 import Host from './page/Host/Host';
-import ListAllSession from './page/Host/ListAllSession';
-import PlayerScoreboard from './page/Host/Host/PlayerScoreboard';
+import CanvasList from './components/CanvasList';
+import SessionList from './components/SessionList';
+import CanvasDetails from './page/Host/Admin/CanvasDetails';
+import Dashboard from './page/Host/Admin/Dashboard';
+import SessionReportDetail from './page/Host/Admin/SessionReportDetail';
+import ParticipantReportDetail from './page/Host/Admin/ParticipantReportDetail';
+import SessionStart from './page/Host/SessionStart';
+import SessionLobby from './page/Host/SessionLobby';
 
 function App() {
   return (
@@ -18,12 +22,20 @@ function App() {
       <Route path='/play' element={<Play/>}/>
 
       <Route path='/admin' element={<Admin />}>
-        <Route path='' element={<ListAllCanva />}/>
-        <Route path='canva/:id' element={<CanvaEdit/>}/>
-        <Route path='session/:canva_id' element={<ListAllSession/>}/>
+        <Route path='' element={<Dashboard />}/>
+        <Route path='dashboard' element={<Dashboard />}/>
+        <Route path='quizzes' element={<CanvasList />}/>
+        <Route path='canva/:id' element={<CanvasDetails/>}/>
+        <Route path='report' element={<SessionList/>}/>
+        <Route path='report/:id' element={<SessionReportDetail/>}/>
+        <Route path='report/:sessionId/participant/:participantId' element={<ParticipantReportDetail/>}/>
       </Route>
+      <Route path='/canva/new' element={<CanvaEdit />}/>
+      <Route path='/canva/edit/:id' element={<CanvaEdit />}/>
+      <Route path='/session/start/:canvasId' element={<SessionStart />}/>
+      <Route path='/host/lobby/:sessionId' element={<SessionLobby />}/>
       <Route path='/host/:session_id' element={<Host/>}/>
-      <Route path='/host/:session_id/leaderboard' element={<PlayerScoreboard/>}/>
+      {/* <Route path='/host/:session_id/leaderboard' element={<PlayerScoreboard/>}/> */}
       <Route path='*' element={<h1>Not Found</h1>}/>
     </Routes>
   );

@@ -31,7 +31,7 @@ const CanvaController = {
         try {
             const { tieu_de } = req.body;
             const ngay_tao = new Date();
-            const canva = await CanvaModule.create({ tieu_de, ngay_tao , is_public: false});
+            const canva = await CanvaModule.create({ tieu_de, ngay_tao});
             res.status(HTTP_STATUS.CREATED).json(canva);
         } catch (err) {
             next(err);
@@ -40,8 +40,8 @@ const CanvaController = {
     async updateCanva(req, res, next) {
         try {
             const { canva_id } = req.params;
-            const { tieu_de, is_public} = req.body;
-            const result = await CanvaModule.update(canva_id, { tieu_de, is_public});
+            const { tieu_de } = req.body;
+            const result = await CanvaModule.update(canva_id, { tieu_de });
             if (result.affectedRows === 0) {
                 throw new DocumentNotFoundError('Canva not found');
             }
@@ -66,9 +66,6 @@ const CanvaController = {
         try {
             const { canva_id } = req.params;
             const sessions = await SessionModel.getByCanvaId(canva_id);
-            if (sessions.length === 0) {
-                throw new DocumentNotFoundError('No sessions found for this canva');
-            }
             res.status(HTTP_STATUS.OK).json(sessions);
         } catch (err) {
             next(err);
@@ -78,9 +75,6 @@ const CanvaController = {
         try {
             const { canva_id } = req.params;
             const cauhois = await CauHoiModel.getByCanvaId(canva_id);
-            if (cauhois.length === 0) {
-                throw new DocumentNotFoundError('No questions found for this canva');
-            }
             res.status(HTTP_STATUS.OK).json(cauhois);
         } catch (err) {
             next(err);

@@ -35,7 +35,7 @@ import { CAU_HOI_ROUTES, CANVA_ROUTES, SESSION_ROUTES, PLAYER_ROUTES } from '../
 
 /**
  * @template {string} P - Mẫu đường dẫn route
- * @typedef {import('./help.d.ts').RouteParameters<P>} RouteParameters
+ * @typedef {import('./RouteParameters.d.ts').RouteParameters<P>} RouteParameters
  */
 
 /**
@@ -77,7 +77,7 @@ import { CAU_HOI_ROUTES, CANVA_ROUTES, SESSION_ROUTES, PLAYER_ROUTES } from '../
  * @property {ApiHandler<
  *   RouteParameters<CAU_HOI_ROUTES['BY_ID']>,
  *   any,
- *   Partial<CauHoiType>,
+ *   Partial<CauHoiWithLuaChonType>,
  *   ResultSetHeader
  * >} updateCauHoi - Cập nhật câu hỏi
  * 
@@ -87,6 +87,21 @@ import { CAU_HOI_ROUTES, CANVA_ROUTES, SESSION_ROUTES, PLAYER_ROUTES } from '../
  *   any,
  *   ResultSetHeader
  * >} deleteCauHoi - Xóa câu hỏi
+ * 
+ * @property {ApiHandler<
+ * RouteParameters<CAU_HOI_ROUTES['LUA_CHON']>,
+ * any,
+ * LuaChonType,
+ * ResultSetHeader
+ * >} createLuaChon - Tạo lựa chọn mới
+ * 
+ * @property {ApiHandler<
+ * RouteParameters<CAU_HOI_ROUTES['LUA_CHON_BY_ID']>,
+ * any,
+ * any,
+ * ResultSetHeader
+ * >} deleteLuaChon - Xóa lựa chọn 
+ * 
  */
 
 /**

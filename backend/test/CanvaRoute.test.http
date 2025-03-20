@@ -1,41 +1,45 @@
-
 @hostName = http://127.0.0.1:3030
 @token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.j9ISYNXLDURR2jAVf8s1brNCqDOavJYgI4vkGa3u9IY
 
-### canva
+### Get all canvases
 GET {{hostName}}/canva
-Content-Type: application/json
 Authorization: Bearer {{token}}
+Content-Type: application/json
 
-###
+### Get canvas by ID
+GET {{hostName}}/canva/2
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+### Create new canvas
 POST {{hostName}}/canva
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-    "tieu_de": "Tieu de 1"
+    "tieu_de": "Test Canvas"
 }
 
-###
-GET {{hostName}}/canva/100
-Authorization: Bearer {{token}}
-Content-Type: application/json
-
-###
-GET {{hostName}}/canva/1/session
-Authorization: Bearer {{token}}
-Content-Type: application/json
-
-###
+### Update canvas
 PUT {{hostName}}/canva/1
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-    "tieu_de": "Tieu sau khi update"
+    "tieu_de": "Updated Canvas Title"
 }
 
-###
+### Delete canvas
 DELETE {{hostName}}/canva/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+### Get all questions for a canvas
+GET {{hostName}}/canva/1/cau_hoi
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+### Get all sessions for a canvas
+GET {{hostName}}/canva/1/session
 Authorization: Bearer {{token}}
 Content-Type: application/json

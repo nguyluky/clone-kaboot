@@ -9,6 +9,16 @@ class PlayerModel extends BaseModel {
         super('player', 'uuid');
     }
 
+    create(data) {
+        data.bai_lam = JSON.stringify(data.bai_lam);
+        return super.create({ ...data, uuid: uuid() });
+    }
+
+    update(uuid, data) {
+        data.bai_lam = JSON.stringify(data.bai_lam);
+        return super.update(uuid, data);
+    }
+
     getBySessionId(sessionId) {
         return this.findAll({ session_id: sessionId });
     }

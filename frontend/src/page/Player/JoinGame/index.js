@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router';
 import './JoinGame.css';
 import { v4 as uuidv4 } from 'uuid';
 import PlayerInfoForm from './PlayerInfoForm';
-import AnimatedNetwork from '../../../component/Background/AnimatedNetwork';
+import AnimatedNetwork from '../../../components/Background/AnimatedNetwork';
 import logo from '../../../assets/images/logo.png';
 import {toast} from 'react-toastify'
 import api from '../../../services/api';
@@ -11,31 +11,29 @@ import api from '../../../services/api';
 export default function JoinGame() {
     const [searchParams] = useSearchParams();
     const [isLoading, setIsLoading] = useState(false);
-    const [canvas, setCanva] = useState([]);
+    const [publicSession, setPublicSession] = useState([]);
 
     const navigate = useNavigate();
 
     const addPlayer = async (
-        session_id, name, email, std
+        name, email, sdt, code
     ) => {
+        console.log(name, email, sdt, code);
         setIsLoading(true);
-        const uuid = uuidv4();
         sessionStorage.setItem('player', JSON.stringify({
-            uuid,
-            session_id,
             name,
             email,
-            std,
+            sdt,
             thoi_gian_vao: new Date().toISOString(),
         }));
-        sessionStorage.setItem('session_code', searchParams.get('code'));
+        sessionStorage.setItem('code', code ?? searchParams.get('code'));
         navigate('/play');
     }
 
     const fetchCanva = async () => {
         try {
-            const res = await api.canva.getPublicCanva();
-            setCanva(res.data);
+            const res = await api.sessionApi.getPublicSessions();
+            setPublicSession(res);
         } catch (err) {
             console.error('Error fetching canva:', err);
             toast.error('Không tìm thấy bài kiểm tra'); 
@@ -56,7 +54,7 @@ export default function JoinGame() {
                     <h2>CYBERSOFT </h2>
                     <p>Chào mường bạn đến bài kiểm tra</p>
                 </div>
-                <PlayerInfoForm addPlayer={addPlayer} canvas={canvas}/>
+                <PlayerInfoForm addPlayer={addPlayer} canvas={publicSession}/>
             </div>
             {
                 isLoading && (

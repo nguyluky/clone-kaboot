@@ -12,8 +12,8 @@ function PlayerScoreboard() {
 
     const fetchQuestions = async () => {
         try {
-            const response = await api.cau_hoi.getCauHoiByCanvaId(session_id)
-            setQuestions(response.data)
+            const response = await api.sessionApi.getQuestions(session_id || '')
+            setQuestions(response)
         } catch (err) {
             console.error('Error fetching questions:', err);
             toast.error('Error fetching questions');
@@ -22,10 +22,10 @@ function PlayerScoreboard() {
 
     const fetchPlayers = async () => {
         try {
-            const response = await api.session.getLeaderboard(session_id)
-            let data = response.data;
+            const response = await api.sessionApi.getLeaderboard(session_id || '')
+            let data = response;
             data = data.sort((a, b) => {
-                return new Date(b.thoi_gian_ket_thuc) - new Date(a.thoi_gian_ket_thuc)
+                return new Date(b.thoi_gian_ket_thuc).getTime() - new Date(a.thoi_gian_ket_thuc).getTime()
             }).sort((a, b) => {
                 return b.point - a.point
             }).reverse()

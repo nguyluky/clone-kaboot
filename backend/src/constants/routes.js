@@ -1,7 +1,9 @@
 export const CAU_HOI_ROUTES = Object.freeze({
   BASE: '/',
   BY_ID: '/:cau_hoi_id',
-  BY_CANVA_ID: '/:canva_id'
+  BY_CANVA_ID: '/:canva_id',
+  LUA_CHON: '/:cau_hoi_id/lua_chon',
+  LUA_CHON_BY_ID: '/:cau_hoi_id/lua_chon/:lua_chon_id'
 });
 
 export const CANVA_ROUTES = Object.freeze({

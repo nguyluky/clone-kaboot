@@ -22,14 +22,88 @@
 }
 
 .host-container {
-    background-image: linear-gradient(to right bottom, #4c8cec, #0080b3, #00676c, #1d4a36, #292e1d);
-    height: 100vh;
     display: flex;
-    justify-content: center;
-    height: 100%;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+}
+
+.host-sidebar {
+    width: 300px;
+    background-color: white;
+    border-right: 1px solid #e9ecef;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.host-session-info {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.host-session-info h3 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+    color: #2c3e50;
+}
+
+.game-pin {
+    font-weight: 700;
+    color: #3498db;
+}
+
+.host-session-info p {
+    margin: 0;
+    color: #6c757d;
+}
+
+.player-list h4 {
+    margin: 0 0 15px 0;
+    font-size: 16px;
+    color: #2c3e50;
+}
+
+.player-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: gray #292e1d;
+    max-height: calc(100vh - 200px);
+}
+
+.player-list-item {
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    color: #495057;
+    transition: background-color 0.2s;
+}
+
+.player-list-item:hover {
+    background-color: #e9ecef;
+}
+
+.host-main {
+    flex-grow: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+@media (max-width: 768px) {
+    .host-container {
+        flex-direction: column;
+    }
+    
+    .host-sidebar {
+        width: 100%;
+        order: 2;
+    }
+    
+    .host-main {
+        order: 1;
+    }
 }
 
 .waiting-room-container {

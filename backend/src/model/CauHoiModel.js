@@ -15,20 +15,20 @@ class CauHoiModel extends BaseModel {
      */
     async getByCanvaId(canvaId) {
         const [result] = await this.__query("\
-SELECT \
-    `cau_hoi`.*,  \
-    (\
-        SELECT JSON_ARRAYAGG(\
-            JSON_OBJECT(\
-                'lua_chon_id', `lua_chon`.`lua_chon_id`,\
-                'noi_dung', `lua_chon`.`noi_dung`,\
-                'dung', `lua_chon`.`dung`\
-            )\
-        )\
-        FROM `lua_chon` \
-        WHERE `lua_chon`.`cau_hoi_id` = `cau_hoi`.`cau_hoi_id`\
-    ) as lua_chon\
-FROM `cau_hoi` \
+SELECT \n\
+    `cau_hoi`.*,  \n\
+    (\n\
+        SELECT JSON_ARRAYAGG(\n\
+            JSON_OBJECT(\n\
+                'lua_chon_id', `lua_chon`.`lua_chon_id`,\n\
+                'noi_dung', `lua_chon`.`noi_dung`,\n\
+                'dung', `lua_chon`.`dung`\n\
+            )\n\
+        )\n\
+        FROM `lua_chon` \n\
+        WHERE `lua_chon`.`cau_hoi_id` = `cau_hoi`.`cau_hoi_id`\n\
+    ) as lua_chon \n\
+FROM `cau_hoi` \n\
 WHERE `cau_hoi`.`canva_id` = ?;", [canvaId]);
 
         return /** @type {CauHoiWithLuaChonType[]} */(result);
@@ -36,20 +36,20 @@ WHERE `cau_hoi`.`canva_id` = ?;", [canvaId]);
 
     async getWithLuaChonByCanvaId(canvaId) {
         const [result] = await this.__query("\
-SELECT \
-    `cau_hoi`.*,  \
-    (\
-        SELECT JSON_ARRAYAGG(\
-            JSON_OBJECT(\
-                'lua_chon_id', `lua_chon`.`lua_chon_id`,\
-                'noi_dung', `lua_chon`.`noi_dung`,\
-                'dung', `lua_chon`.`dung`\
-            )\
-        )\
-        FROM `lua_chon` \
-        WHERE `lua_chon`.`cau_hoi_id` = `cau_hoi`.`cau_hoi_id`\
-    ) as lua_chon\
-FROM `cau_hoi` \
+SELECT \n\
+    `cau_hoi`.*,  \n\
+    (\n\
+        SELECT JSON_ARRAYAGG(\n\
+            JSON_OBJECT(\n\
+                'lua_chon_id', `lua_chon`.`lua_chon_id`,\n\
+                'noi_dung', `lua_chon`.`noi_dung`,\n\
+                'dung', `lua_chon`.`dung`\n\
+            )\n\
+        )\n\
+        FROM `lua_chon` \n\
+        WHERE `lua_chon`.`cau_hoi_id` = `cau_hoi`.`cau_hoi_id`\n\
+    ) as lua_chon \n\
+FROM `cau_hoi` \n\
 WHERE `cau_hoi`.`canva_id` = ?;", [canvaId]);
 
         return /** @type {CauHoiWithLuaChonType[]} */(result);
@@ -62,20 +62,20 @@ WHERE `cau_hoi`.`canva_id` = ?;", [canvaId]);
      */
     async getWithLuaChon(cauHoiId) {
         const [result] = await this.__query("\
-SELECT \
-    `cau_hoi`.*,  \
-    (\
-        SELECT JSON_ARRAYAGG(\
-            JSON_OBJECT(\
-                'lua_chon_id', `lua_chon`.`lua_chon_id`,\
-                'noi_dung', `lua_chon`.`noi_dung`,\
-                'dung', `lua_chon`.`dung`\
-            )\
-        )\
-        FROM `lua_chon` \
-        WHERE `lua_chon`.`cau_hoi_id` = `cau_hoi`.`cau_hoi_id`\
-    ) as lua_chon\
-FROM `cau_hoi` \
+SELECT \n\
+    `cau_hoi`.*,  \n\
+    (\n\
+        SELECT JSON_ARRAYAGG(\n\
+            JSON_OBJECT(\n\
+                'lua_chon_id', `lua_chon`.`lua_chon_id`,\n\
+                'noi_dung', `lua_chon`.`noi_dung`,\n\
+                'dung', `lua_chon`.`dung`\n\
+            )\n\
+        )\n\
+        FROM `lua_chon` \n\
+        WHERE `lua_chon`.`cau_hoi_id` = `cau_hoi`.`cau_hoi_id`\n\
+    ) as lua_chon \n\
+FROM `cau_hoi` \n\
 WHERE `cau_hoi`.`cau_hoi_id` = ?;", [cauHoiId]);
 
         return /** @type {CauHoiWithLuaChonType} */(result[0]);
@@ -83,19 +83,19 @@ WHERE `cau_hoi`.`cau_hoi_id` = ?;", [cauHoiId]);
 
     async getAllWithLuaChon() {
         const [result] = await this.__query("\
-SELECT \
-    `cau_hoi`.*,  \
-    (\
-        SELECT JSON_ARRAYAGG(\
-            JSON_OBJECT(\
-                'lua_chon_id', `lua_chon`.`lua_chon_id`,\
-                'noi_dung', `lua_chon`.`noi_dung`,\
-                'dung', `lua_chon`.`dung`\
-            )\
-        )\
-        FROM `lua_chon` \
-        WHERE `lua_chon`.`cau_hoi_id` = `cau_hoi`.`cau_hoi_id`\
-    ) as lua_chon\
+SELECT \n\
+    `cau_hoi`.*,  \n\
+    (\n\
+        SELECT JSON_ARRAYAGG(\n\
+            JSON_OBJECT(\n\
+                'lua_chon_id', `lua_chon`.`lua_chon_id`,\n\
+                'noi_dung', `lua_chon`.`noi_dung`,\n\
+                'dung', `lua_chon`.`dung`\n\
+            )\n\
+        )\n\
+        FROM `lua_chon` \n\
+        WHERE `lua_chon`.`cau_hoi_id` = `cau_hoi`.`cau_hoi_id`\n\
+    ) as lua_chon \n\
 FROM `cau_hoi`;");
 
         return /** @type {CauHoiWithLuaChonType[]} */(result[0]);
@@ -104,7 +104,8 @@ FROM `cau_hoi`;");
     /**
      * 
      * @param {*} cauHoiId 
-     * @param {CauHoiWithLuaChonType} data 
+     * @param {Partial<CauHoiWithLuaChonType>} data 
+     * @returns {Promise<ResultSetHeader>}
      */
     async updateCauHoiWithLuaChon(cauHoiId, data) {
         const transaction = await pool.getConnection();
@@ -113,21 +114,46 @@ FROM `cau_hoi`;");
         try {
             const { lua_chon, ...cauHoiData } = data;
 
-            await this.__query('UPDATE ?? SET ? WHERE ?? = ?', [this.tableName, cauHoiData, this.PK, cauHoiId]);
-            const updateLuaChons = lua_chon.map(async (lc) => {
+            const result = await this.__query('UPDATE ?? SET ? WHERE ?? = ?', [this.tableName, cauHoiData, this.PK, cauHoiId]);
+
+            await this.__query('DELETE FROM lua_chon WHERE lua_chon_id IN (' + (lua_chon || []).filter(lc => lc.lua_chon_id).map(lc => lc.lua_chon_id).join(',') + ')');
+
+            const updateLuaChons = (lua_chon || []).map(async (lc) => {
                 if (lc.lua_chon_id) {
-                    await this.__query('UPDATE lua_chon SET ? WHERE lua_chon_id = ?', [lc, lc.lua_chon_id]);
+                    return (await this.__query('UPDATE lua_chon SET ? WHERE lua_chon_id = ?', [lc, lc.lua_chon_id]))[0];
                 } else {
-                    await this.__query('INSERT INTO lua_chon SET ?', lc);
+                    return (await this.__query('INSERT INTO lua_chon SET ?', lc))[0];
                 }
             });
 
-            await Promise.all(updateLuaChons);
+            Promise.all(updateLuaChons);
             await transaction.commit();
+            return /** @type {ResultSetHeader} */ (result[0]);
         } catch (error) {
             await transaction.rollback();
             throw error;
         }
+    }
+
+    /**
+     * 
+     * @param {*} cauHoiId 
+     * @param {import('../utils/help.js').PartialBy<Omit<LuaChonType, 'cau_hoi_id'>, 'lua_chon_id'>} luaChon 
+     * @returns 
+     */
+    async createLuaChon(cauHoiId, luaChon) {
+        const [result] = await this.__query('INSERT INTO lua_chon SET ?', { ...luaChon, cau_hoi_id: cauHoiId });
+        return /** @type {ResultSetHeader} */ (result);
+    }
+
+    /**
+     * 
+     * @param {*} luaChonId 
+     * @returns {Promise<ResultSetHeader>}
+     */
+    async deleteLuaChon(luaChonId) {
+        const [result] = await this.__query('DELETE FROM lua_chon WHERE lua_chon_id = ?', [luaChonId]);
+        return /** @type {ResultSetHeader} */ (result);
     }
 }
 

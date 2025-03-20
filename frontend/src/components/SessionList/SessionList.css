@@ -1,0 +1,240 @@
+.sessions-container {
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.sessions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.sessions-header h2 {
+  font-size: 24px;
+  color: #2c3e50;
+  margin: 0;
+}
+
+.view-toggles {
+  display: flex;
+  gap: 10px;
+}
+
+.view-toggle {
+  background-color: #ecf0f1;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.3s;
+}
+
+.view-toggle.active {
+  background-color: #3498db;
+  color: white;
+}
+
+.session-filters {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.search-box {
+  flex: 1;
+  position: relative;
+}
+
+.search-box i {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #95a5a6;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 10px 10px 10px 35px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.filter-dropdown, .date-dropdown {
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  font-size: 14px;
+}
+
+/* Table view styles */
+.sessions-table-container {
+  overflow-x: auto;
+}
+
+.sessions-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.sessions-table th, 
+.sessions-table td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+.sessions-table th {
+  background-color: #f8f9fa;
+  color: #7f8c8d;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.session-time {
+  color: #95a5a6;
+  font-size: 0.9em;
+  margin-left: 5px;
+}
+
+.score-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 120px;
+}
+
+.score-bar {
+  height: 8px;
+  background-color: #3498db;
+  border-radius: 4px;
+}
+
+.table-action-btn {
+  background: none;
+  border: none;
+  color: #7f8c8d;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 3px;
+  transition: all 0.2s;
+}
+
+.table-action-btn:hover {
+  background-color: #f5f5f5;
+  color: #2c3e50;
+}
+
+/* Card view styles */
+.session-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.session-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.session-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.session-card-header {
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.session-card-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #2c3e50;
+}
+
+.session-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  color: #7f8c8d;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 3px;
+  transition: background-color 0.2s;
+}
+
+.action-btn:hover {
+  background-color: #f5f5f5;
+  color: #2c3e50;
+}
+
+.session-card-body {
+  padding: 15px;
+}
+
+.session-info-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  color: #7f8c8d;
+}
+
+.session-info-item i {
+  width: 20px;
+  margin-right: 10px;
+  text-align: center;
+}
+
+.session-card-footer {
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-top: 1px solid #f0f0f0;
+}
+
+.score-label {
+  font-size: 14px;
+  color: #7f8c8d;
+  margin-bottom: 8px;
+}
+
+.score-container {
+  height: 8px;
+  background-color: #ecf0f1;
+  border-radius: 4px;
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.score-bar {
+  height: 100%;
+  background-color: #3498db;
+  border-radius: 4px;
+}
+
+.score-value {
+  font-weight: 600;
+  color: #2c3e50;
+}

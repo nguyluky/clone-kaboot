@@ -15,5 +15,7 @@ router.get(CAU_HOI_ROUTES.BY_ID, CauHoiController.getCauHoiById);
 router.post(CAU_HOI_ROUTES.BASE, CauHoiController.createCauHoi);
 router.put(CAU_HOI_ROUTES.BY_ID, CauHoiController.updateCauHoi);
 router.delete(CAU_HOI_ROUTES.BY_ID, CauHoiController.deleteCauHoi);
+router.post(CAU_HOI_ROUTES.LUA_CHON, CauHoiController.createLuaChon);
+router.delete(CAU_HOI_ROUTES.LUA_CHON_BY_ID, CauHoiController.deleteLuaChon);
 
 export default router;

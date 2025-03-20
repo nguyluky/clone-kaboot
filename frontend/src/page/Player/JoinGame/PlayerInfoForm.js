@@ -11,7 +11,7 @@ export default function PlayerInfoForm({addPlayer , canvas}) {
 
     return (
         <>
-        <form onSubmit={(e) => { e.preventDefault(); addPlayer(); }}>
+        <form onSubmit={(e) => { e.preventDefault(); addPlayer(name, email, std, subject); }}>
             <input type='text' required value={name} onChange={e => setName(e.target.value)} placeholder='Name' />
             <br />
             <input type='email' required pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$' value={email} onChange={e => setEmail(e.target.value)} placeholder='Email' />
@@ -20,11 +20,11 @@ export default function PlayerInfoForm({addPlayer , canvas}) {
             <br />
             {
                 !searchParams.get('code') && 
-            <select required value={subject} onChange={e => setSubject(e.target.value)}>
+            <select onChange={e => setSubject(e.target.value)} value={subject}>
                 <option value='0' defaultChecked>Bạn muốn làm gì </option>
                 {
                     canvas.map((item, index) => (
-                        <option key={index} value={item.canva_id}>{item.tieu_de}</option>
+                        <option key={index} value={item.code_join}>{item.title}</option>
                     ))
                 }
             </select>

@@ -2,6 +2,7 @@ import React from 'react';
 import MDEditor from '@uiw/react-md-editor';
 import './CanvaEdit.css';
 import api from '../../../services/api';
+import { toast } from 'react-toastify';
 
 function QuestionInfo({ index, timeLimit, setTimeLimit, handleDelete, handleSave }) {
     return (
@@ -12,7 +13,6 @@ function QuestionInfo({ index, timeLimit, setTimeLimit, handleDelete, handleSave
                 </h3>
                 <p>
                     <input className='question-time-limit' value={timeLimit} onChange={(e) => setTimeLimit(e.target.value)}></input>
-                    S
                 </p>
             </p>
             <span>
@@ -56,35 +56,69 @@ function QuestionChoices({ choices, setChoices, handleAddChoice, handleDeleteCho
     );
 }
 
-function Question({ index, item, onChange, onDelete }) {
+/**
+ * 
+ * @param {{
+ * index: number;
+ * item: CauHoiWithLuaChonType;
+ * onDelete: (question_id: number) => void;
+ * }} param0 
+ * @returns 
+ */
+function Question({ index, item, onDelete }) {
+    /** @type {useStateReturnType<string>} */
     const [content, setContent] = React.useState(item.noi_dung);
+    /** @type {useStateReturnType<CauHoiWithLuaChonType['lua_chon']>} */
     const [choices, setChoices] = React.useState(item.lua_chon);
     const [timeLimit, setTimeLimit] = React.useState(item.thoi_gian);
 
     const handleSave = () => {
-        const promises = [];
-        promises.push(updateQuestion(item.cau_hoi_id, item.canva_id, content, item.dinh_dang, timeLimit));
-        choices?.forEach((choice) => {
-            promises.push(updateChoice(choice));
-        });
-
-        Promise.all(promises).then(() => {
-            alert('Save success');
-        }).catch(() => {
-            alert('Save fail');
+        api.cauHoiApi.update(item.cau_hoi_id, {
+            noi_dung: content,
+            thoi_gian: timeLimit,
+            lua_chon: choices
+        }).then((resp) => {
+            toast.success('Save success');
+        }).catch(error => {
+            console.error('Error saving question:', error);
+            toast.error('Save fail');
         });
     };
 
     const handleDelete = () => {
-        deleteQuestion(item.cau_hoi_id, onDelete);
+        api.cauHoiApi.delete(item.cau_hoi_id).then(() => {
+            onDelete(item.cau_hoi_id);
+        }).catch(error => {
+            console.error('Error deleting question:', error);
+            toast.error('Delete fail');
+        });
     };
 
     const handleAddChoice = () => {
-        addChoice(item.cau_hoi_id, choices, setChoices);
+        api.cauHoiApi.createChoice(item.cau_hoi_id, {
+            noi_dung: '',
+            dung: false
+        }).then((resp) => {
+            setChoices([...choices, {
+                noi_dung: '',
+                dung: false,
+                lua_chon_id: resp.insertId,
+                cau_hoi_id: item.cau_hoi_id
+            }]);
+        }).catch(error => {
+            console.error('Error adding choice:', error);
+            toast.error('Add fail');
+        });
     };
 
-    const handleDeleteChoice = (choice_id) => {
-        deleteChoice(choice_id, choices, setChoices);
+    const handleDeleteChoice = (choice_index) => {
+        api.cauHoiApi.deleteChoice(item.cau_hoi_id, choices[choice_index].lua_chon_id).then(() => {
+            setChoices(choices.filter((_, index) => index !== choice_index));
+        }).catch(error => {
+            console.error('Error deleting choice:', error);
+            toast.error('Delete fail');
+        });
+
     };
 
     console.log(choices)
@@ -96,55 +130,6 @@ function Question({ index, item, onChange, onDelete }) {
             <QuestionChoices choices={choices} setChoices={setChoices} handleAddChoice={handleAddChoice} handleDeleteChoice={handleDeleteChoice} />
         </div>
     );
-}
-
-function updateQuestion(question_id, canvas_id, content, format, timeLimit) {
-    return api.cau_hoi.updateCauHoi({
-        cau_hoi_id: question_id,
-        canva_id: canvas_id,
-        noi_dung: content,
-        dinh_dang: format,
-        thoi_gian: timeLimit
-    });
-}
-
-function updateChoice(choice) {
-    return api.cau_hoi.updateLuachon(choice);
-}
-
-function deleteQuestion(question_id, onDelete) {
-    api.cau_hoi.deleteCauHoi(question_id).then(() => {
-        onDelete(question_id);
-    }).catch(error => {
-        console.error('Error deleting question:', error);
-        alert('Delete fail');
-    });
-}
-
-function addChoice(question_id, choices, setChoices) {
-    api.cau_hoi.addLuaChon({
-        cau_hoi_id: question_id,
-        noi_dung: '',
-        dung: false
-    }).then((data) => {
-        setChoices([...choices || [], {
-            lua_chon_id: data.insertId,
-            noi_dung: '',
-            dung: false
-        }]);
-    }).catch(error => {
-        console.error('Error adding choice:', error);
-        alert('Add fail');
-    });
-}
-
-function deleteChoice(choice_id, choices, setChoices) {
-    api.cau_hoi.deleteCauHoi(choice_id).then(() => {
-        setChoices([...choices?.filter(e => e.lua_chon_id !== choice_id)]);
-    }).catch(error => {
-        console.error('Error deleting choice:', error);
-        alert('Delete fail');
-    });
 }
 
 export default Question;

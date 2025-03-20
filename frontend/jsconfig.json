@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "module": "ES6",
+    "target": "ES2023",
+    "moduleResolution": "node",
+    "allowJs": true,
+    "allowImportingTsExtensions": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "checkJs": true,
+    "jsx": "react",
+    "resolveJsonModule": true,
+    "esModuleInterop": true
+  },
+  "compileOnSave": true,
+  "typingOptions": {
+    "enableAutoDiscovery": true
+  }
+}

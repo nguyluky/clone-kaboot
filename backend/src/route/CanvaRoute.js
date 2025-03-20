@@ -14,6 +14,6 @@ router.put(CANVA_ROUTES.BY_ID, CanvaController.updateCanva);
 router.delete(CANVA_ROUTES.BY_ID, CanvaController.deleteCanva);
 router.get(CANVA_ROUTES.BY_ID, CanvaController.getById);
 router.get(CANVA_ROUTES.SESSION, CanvaController.getAllSessionByCanvaId);
-router.get(CANVA_ROUTES.SESSION, CanvaController.getAllCauHoiByCanvaId);
+router.get(CANVA_ROUTES.CAU_HOI, CanvaController.getAllCauHoiByCanvaId);
 
 export default router;
