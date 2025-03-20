@@ -1,70 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './CanvasDetail.css';
 import { useNavigate, useParams } from 'react-router';
-
-// Sample data for demonstration
-const sampleCanvas = {
-  id: 1,
-  title: 'Marketing Quiz',
-  category: 'Business',
-  description: 'A comprehensive quiz covering basic marketing concepts, strategies, and case studies.',
-  createdBy: 'John Smith',
-  lastModified: '2023-08-15',
-  questions: [
-    {
-      id: 1,
-      type: 'multiple-choice',
-      question: 'What is the 4 Ps of Marketing?',
-      timeLimit: 60,
-      points: 100,
-      options: [
-        { id: 'a', text: 'Price, Product, Promotion, Place' },
-        { id: 'b', text: 'People, Process, Product, Price' },
-        { id: 'c', text: 'Promotion, Place, People, Process' },
-        { id: 'd', text: 'Product, Price, Process, People' }
-      ],
-      correctAnswer: 'a'
-    },
-    {
-      id: 2,
-      type: 'multiple-choice',
-      question: 'Which of these is NOT a marketing strategy?',
-      timeLimit: 45,
-      points: 75,
-      options: [
-        { id: 'a', text: 'Outbound Marketing' },
-        { id: 'b', text: 'Inbound Marketing' },
-        { id: 'c', text: 'Content Marketing' },
-        { id: 'd', text: 'Financial Marketing' }
-      ],
-      correctAnswer: 'd'
-    },
-    {
-      id: 3,
-      type: 'true-false',
-      question: 'Digital marketing is more effective than traditional marketing in all scenarios.',
-      timeLimit: 30,
-      points: 50,
-      options: [
-        { id: 'a', text: 'True' },
-        { id: 'b', text: 'False' }
-      ],
-      correctAnswer: 'b'
-    }
-  ],
-  stats: {
-    timesPlayed: 12,
-    totalParticipants: 78,
-    avgScore: 72,
-    completionRate: 94,
-    difficultyRating: 'Medium'
-  }
-};
+import { canvasApi } from '../../services/fakeDatabase';
 
 export default function CanvasDetail() {
   const [activeTab, setActiveTab] = useState('overview');
+  const [canvas, setCanvas] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
   const navigate = useNavigate();
   const { id } = useParams();
+  
+  useEffect(() => {
+    const fetchCanvasDetail = async () => {
+      try {
+        setLoading(true);
+        const data = await canvasApi.getById(id);
+        setCanvas(data);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message || 'Failed to fetch canvas data');
+        setLoading(false);
+      }
+    };
+    
+    fetchCanvasDetail();
+  }, [id]);
   
   const handleStartSession = () => {
     navigate(`/session/start/${id}`);
@@ -79,14 +41,45 @@ export default function CanvasDetail() {
     alert('Share functionality would be implemented here');
   };
   
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Loading canvas...</p>
+      </div>
+    );
+  }
+  
+  if (error) {
+    return (
+      <div className="error-container">
+        <i className="fas fa-exclamation-circle"></i>
+        <p>{error}</p>
+        <button className="retry-button" onClick={() => window.location.reload()}>Retry</button>
+      </div>
+    );
+  }
+
+  if (!canvas) {
+    return (
+      <div className="error-container">
+        <i className="fas fa-exclamation-circle"></i>
+        <p>Canvas not found</p>
+        <button className="back-button" onClick={() => navigate('/admin/quizzes')}>
+          Back to Quizzes
+        </button>
+      </div>
+    );
+  }
+  
   return (
     <div className="canvas-detail-container">
       <div className="canvas-detail-header">
         <div className="canvas-detail-title">
-          <span className="canvas-category">{sampleCanvas.category}</span>
-          <h1>{sampleCanvas.title}</h1>
+          <span className="canvas-category">{canvas.category}</span>
+          <h1>{canvas.title}</h1>
           <p className="canvas-detail-meta">
-            Created by {sampleCanvas.createdBy} • Last modified: {sampleCanvas.lastModified}
+            Created by {canvas.createdBy} • Last modified: {canvas.lastModified}
           </p>
         </div>
         <div className="canvas-detail-actions">
@@ -113,7 +106,7 @@ export default function CanvasDetail() {
           className={`tab-button ${activeTab === 'questions' ? 'active' : ''}`}
           onClick={() => setActiveTab('questions')}
         >
-          <i className="fas fa-question-circle"></i> Questions ({sampleCanvas.questions.length})
+          <i className="fas fa-question-circle"></i> Questions ({canvas.questions.length})
         </button>
         <button 
           className={`tab-button ${activeTab === 'stats' ? 'active' : ''}`}
@@ -134,7 +127,7 @@ export default function CanvasDetail() {
           <div className="canvas-overview">
             <div className="overview-section">
               <h3>Description</h3>
-              <p>{sampleCanvas.description}</p>
+              <p>{canvas.description}</p>
             </div>
             
             <div className="overview-cards">
@@ -143,7 +136,7 @@ export default function CanvasDetail() {
                   <i className="fas fa-question"></i>
                 </div>
                 <div className="overview-info">
-                  <h4>{sampleCanvas.questions.length}</h4>
+                  <h4>{canvas.questions.length}</h4>
                   <p>Questions</p>
                 </div>
               </div>
@@ -153,7 +146,7 @@ export default function CanvasDetail() {
                   <i className="fas fa-trophy"></i>
                 </div>
                 <div className="overview-info">
-                  <h4>{sampleCanvas.stats.avgScore}%</h4>
+                  <h4>{canvas.stats.avgScore}%</h4>
                   <p>Avg. Score</p>
                 </div>
               </div>
@@ -163,7 +156,7 @@ export default function CanvasDetail() {
                   <i className="fas fa-users"></i>
                 </div>
                 <div className="overview-info">
-                  <h4>{sampleCanvas.stats.totalParticipants}</h4>
+                  <h4>{canvas.stats.totalParticipants}</h4>
                   <p>Participants</p>
                 </div>
               </div>
@@ -173,7 +166,7 @@ export default function CanvasDetail() {
                   <i className="fas fa-clock"></i>
                 </div>
                 <div className="overview-info">
-                  <h4>~{sampleCanvas.questions.reduce((sum, q) => sum + q.timeLimit, 0) / 60} min</h4>
+                  <h4>~{canvas.questions.reduce((sum, q) => sum + q.timeLimit, 0) / 60} min</h4>
                   <p>Duration</p>
                 </div>
               </div>
@@ -198,7 +191,7 @@ export default function CanvasDetail() {
           <div className="canvas-questions">
             <div className="questions-header">
               <div className="questions-count">
-                {sampleCanvas.questions.length} Questions
+                {canvas.questions.length} Questions
               </div>
               <button className="add-question-btn">
                 <i className="fas fa-plus"></i> Add Question
@@ -206,7 +199,7 @@ export default function CanvasDetail() {
             </div>
             
             <div className="question-list">
-              {sampleCanvas.questions.map((question, index) => (
+              {canvas.questions.map((question, index) => (
                 <div className="question-card" key={question.id}>
                   <div className="question-number">{index + 1}</div>
                   <div className="question-content">
@@ -248,27 +241,27 @@ export default function CanvasDetail() {
             <div className="stats-cards">
               <div className="stats-card">
                 <h3>Times Played</h3>
-                <div className="stats-value">{sampleCanvas.stats.timesPlayed}</div>
+                <div className="stats-value">{canvas.stats.timesPlayed}</div>
               </div>
               
               <div className="stats-card">
                 <h3>Total Participants</h3>
-                <div className="stats-value">{sampleCanvas.stats.totalParticipants}</div>
+                <div className="stats-value">{canvas.stats.totalParticipants}</div>
               </div>
               
               <div className="stats-card">
                 <h3>Average Score</h3>
-                <div className="stats-value">{sampleCanvas.stats.avgScore}%</div>
+                <div className="stats-value">{canvas.stats.avgScore}%</div>
               </div>
               
               <div className="stats-card">
                 <h3>Completion Rate</h3>
-                <div className="stats-value">{sampleCanvas.stats.completionRate}%</div>
+                <div className="stats-value">{canvas.stats.completionRate}%</div>
               </div>
               
               <div className="stats-card">
                 <h3>Difficulty Rating</h3>
-                <div className="stats-value">{sampleCanvas.stats.difficultyRating}</div>
+                <div className="stats-value">{canvas.stats.difficultyRating}</div>
               </div>
             </div>
             
@@ -300,12 +293,12 @@ export default function CanvasDetail() {
               <h3>General Settings</h3>
               <div className="setting-item">
                 <label>Canvas Title</label>
-                <input type="text" value={sampleCanvas.title} />
+                <input type="text" defaultValue={canvas.title} />
               </div>
               
               <div className="setting-item">
                 <label>Category</label>
-                <select defaultValue={sampleCanvas.category}>
+                <select defaultValue={canvas.category}>
                   <option>Business</option>
                   <option>Education</option>
                   <option>Entertainment</option>
@@ -315,7 +308,7 @@ export default function CanvasDetail() {
               
               <div className="setting-item">
                 <label>Description</label>
-                <textarea defaultValue={sampleCanvas.description}></textarea>
+                <textarea defaultValue={canvas.description}></textarea>
               </div>
             </div>
             

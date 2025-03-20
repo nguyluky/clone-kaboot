@@ -1,37 +1,56 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import './Dashboard.css';
-
-// Sample recent activity data
-const recentActivities = [
-  { id: 1, type: 'session', title: 'Marketing Class 101', date: '2023-08-15', participants: 24 },
-  { id: 2, type: 'canvas', title: 'JavaScript Fundamentals', date: '2023-08-12', action: 'created' },
-  { id: 3, type: 'session', title: 'Geography Finals', date: '2023-08-10', participants: 45 },
-  { id: 4, type: 'canvas', title: 'Marketing Quiz', date: '2023-08-08', action: 'updated' }
-];
+import { dashboardApi } from '../../../../services/fakeDatabase';
 
 export default function Dashboard() {
+  const [stats, setStats] = useState(null);
+  const [popularQuizzes, setPopularQuizzes] = useState([]);
+  const [recentActivity, setRecentActivity] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
   const navigate = useNavigate();
   
-  const getActivityIcon = (type) => {
-    switch (type) {
-      case 'session':
-        return 'fas fa-play';
-      case 'canvas':
-        return 'fas fa-edit';
-      default:
-        return 'fas fa-bell';
-    }
-  };
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
+        const statsData = await dashboardApi.getStats();
+        const quizzesData = await dashboardApi.getPopularQuizzes();
+        const activityData = await dashboardApi.getRecentActivity();
+        
+        setStats(statsData);
+        setPopularQuizzes(quizzesData);
+        setRecentActivity(activityData);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message || 'Failed to fetch dashboard data');
+        setLoading(false);
+      }
+    };
+    
+    fetchDashboardData();
+  }, []);
   
-  const getActivityDescription = (activity) => {
-    if (activity.type === 'session') {
-      return `Hosted session with ${activity.participants} participants`;
-    } else if (activity.type === 'canvas') {
-      return `Quiz ${activity.action}`;
-    }
-    return '';
-  };
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Loading dashboard...</p>
+      </div>
+    );
+  }
+  
+  if (error) {
+    return (
+      <div className="error-container">
+        <i className="fas fa-exclamation-circle"></i>
+        <p>{error}</p>
+        <button className="retry-button" onClick={() => window.location.reload()}>Retry</button>
+      </div>
+    );
+  }
   
   return (
     <div className="dashboard-container">
@@ -59,7 +78,7 @@ export default function Dashboard() {
             <i className="fas fa-palette"></i>
           </div>
           <div className="stat-info">
-            <h3>6</h3>
+            <h3>{stats.totalQuizzes}</h3>
             <p>Total Quizzes</p>
           </div>
         </div>
@@ -69,7 +88,7 @@ export default function Dashboard() {
             <i className="fas fa-users"></i>
           </div>
           <div className="stat-info">
-            <h3>128</h3>
+            <h3>{stats.totalParticipants}</h3>
             <p>Total Participants</p>
           </div>
         </div>
@@ -79,7 +98,7 @@ export default function Dashboard() {
             <i className="fas fa-chart-bar"></i>
           </div>
           <div className="stat-info">
-            <h3>15</h3>
+            <h3>{stats.totalSessions}</h3>
             <p>Sessions Conducted</p>
           </div>
         </div>
@@ -89,7 +108,7 @@ export default function Dashboard() {
             <i className="fas fa-clock"></i>
           </div>
           <div className="stat-info">
-            <h3>24h</h3>
+            <h3>{stats.totalPlayTime}</h3>
             <p>Total Play Time</p>
           </div>
         </div>
@@ -99,7 +118,7 @@ export default function Dashboard() {
             <i className="fas fa-file-alt"></i>
           </div>
           <div className="stat-info">
-            <h3>8</h3>
+            <h3>{stats.reportsCount}</h3>
             <p>Analytics Reports</p>
           </div>
         </div>
@@ -113,14 +132,18 @@ export default function Dashboard() {
           </div>
           
           <div className="activity-list">
-            {recentActivities.map(activity => (
+            {recentActivity.map(activity => (
               <div className="activity-item" key={activity.id}>
                 <div className="activity-icon">
-                  <i className={getActivityIcon(activity.type)}></i>
+                  <i className={`fas ${activity.type === 'session' ? 'fa-play' : 'fa-edit'}`}></i>
                 </div>
                 <div className="activity-details">
-                  <h4>{activity.title}</h4>
-                  <p>{getActivityDescription(activity)}</p>
+                  <h4>{activity.name}</h4>
+                  <p>
+                    {activity.type === 'session' 
+                      ? `Hosted session with ${activity.participants} participants` 
+                      : `Quiz ${activity.action}`}
+                  </p>
                 </div>
                 <div className="activity-date">
                   {activity.date}
@@ -137,38 +160,18 @@ export default function Dashboard() {
           </div>
           
           <div className="popular-quizzes-list">
-            <div className="popular-quiz-card">
-              <div className="popular-quiz-info">
-                <h4>Marketing Quiz</h4>
-                <p>78 participants • 72% avg. score</p>
+            {popularQuizzes.map(quiz => (
+              <div className="popular-quiz-card" key={quiz.id}>
+                <div className="popular-quiz-info">
+                  <h4>{quiz.title}</h4>
+                  <p>{quiz.participants} participants • {quiz.avgScore}% avg. score</p>
+                </div>
+                <div className="popular-quiz-plays">
+                  <span className="plays-count">{quiz.plays}</span>
+                  <span className="plays-label">plays</span>
+                </div>
               </div>
-              <div className="popular-quiz-plays">
-                <span className="plays-count">12</span>
-                <span className="plays-label">plays</span>
-              </div>
-            </div>
-            
-            <div className="popular-quiz-card">
-              <div className="popular-quiz-info">
-                <h4>JavaScript Fundamentals</h4>
-                <p>32 participants • 65% avg. score</p>
-              </div>
-              <div className="popular-quiz-plays">
-                <span className="plays-count">8</span>
-                <span className="plays-label">plays</span>
-              </div>
-            </div>
-            
-            <div className="popular-quiz-card">
-              <div className="popular-quiz-info">
-                <h4>World Geography</h4>
-                <p>45 participants • 82% avg. score</p>
-              </div>
-              <div className="popular-quiz-plays">
-                <span className="plays-count">5</span>
-                <span className="plays-label">plays</span>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>

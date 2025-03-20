@@ -1,69 +1,55 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import './SessionList.css';
-
-// Sample data for demonstration
-const sampleSessions = [
-  { 
-    id: 1, 
-    name: 'Marketing Class 101', 
-    quiz: 'Marketing Quiz', 
-    date: '2023-08-15', 
-    time: '10:30 AM',
-    participants: 24, 
-    avgScore: 78,
-    duration: '45 min'
-  },
-  { 
-    id: 2, 
-    name: 'JavaScript Workshop', 
-    quiz: 'JavaScript Fundamentals', 
-    date: '2023-08-10', 
-    time: '2:00 PM',
-    participants: 32, 
-    avgScore: 65,
-    duration: '60 min'
-  },
-  { 
-    id: 3, 
-    name: 'Geography Finals', 
-    quiz: 'World Geography', 
-    date: '2023-08-05', 
-    time: '9:15 AM',
-    participants: 45, 
-    avgScore: 82,
-    duration: '50 min'
-  },
-  { 
-    id: 4, 
-    name: 'Team Building Event', 
-    quiz: 'Pop Culture 2023', 
-    date: '2023-07-28', 
-    time: '3:30 PM',
-    participants: 18, 
-    avgScore: 91,
-    duration: '30 min'
-  },
-  { 
-    id: 5, 
-    name: 'Science Class 10B', 
-    quiz: 'Science Quiz', 
-    date: '2023-07-20', 
-    time: '11:00 AM',
-    participants: 29, 
-    avgScore: 73,
-    duration: '40 min'
-  },
-];
+import { sessionApi } from '../../services/fakeDatabase';
 
 export default function SessionList() {
-  const [viewMode, setViewMode] = useState('table'); // 'table' or 'cards'
+  const [sessions, setSessions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [viewMode, setViewMode] = useState('table');
+  
   const navigate = useNavigate();
   
-  const handleViewSessionDetails = (id) => {
-    navigate(`/admin/report/${id}`);
+  useEffect(() => {
+    const fetchSessions = async () => {
+      try {
+        setLoading(true);
+        const data = await sessionApi.getAll();
+        setSessions(data);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message || 'Failed to fetch sessions');
+        setLoading(false);
+      }
+    };
+    
+    fetchSessions();
+  }, []);
+  
+  const handleViewSessionDetails = (sessionId) => {
+    navigate(`/admin/report/${sessionId}`);
   };
-
+  
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Loading sessions...</p>
+      </div>
+    );
+  }
+  
+  if (error) {
+    return (
+      <div className="error-container">
+        <i className="fas fa-exclamation-circle"></i>
+        <p>{error}</p>
+        <button className="retry-button" onClick={() => window.location.reload()}>Retry</button>
+      </div>
+    );
+  }
+  
   return (
     <div className="sessions-container">
       <div className="sessions-header">
@@ -119,7 +105,7 @@ export default function SessionList() {
               </tr>
             </thead>
             <tbody>
-              {sampleSessions.map(session => (
+              {sessions.map(session => (
                 <tr key={session.id} onClick={() => handleViewSessionDetails(session.id)} style={{ cursor: 'pointer' }}>
                   <td>{session.name}</td>
                   <td>{session.quiz}</td>
@@ -153,7 +139,7 @@ export default function SessionList() {
         </div>
       ) : (
         <div className="session-cards">
-          {sampleSessions.map(session => (
+          {sessions.map(session => (
             <div className="session-card" key={session.id} onClick={() => handleViewSessionDetails(session.id)}>
               <div className="session-card-header">
                 <h3>{session.name}</h3>
