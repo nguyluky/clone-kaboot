@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import { ApiError } from './error.js';
 
 const generateAccessToken = (payload) => {
     console.log(process.env.JWT_SECRET, process.env.JWT_EXPIRATION);
@@ -18,14 +19,14 @@ const middlewareAuth = (req, res, next) => {
     console.log(token)
 
     if (!token) {
-        return res.status(401).json('Access denied');
+        throw new ApiError('Access denied', 401);
     }
     try {
         verifyAccessToken(token);
         req.is_admin = true
         next();
     } catch (error) {
-        return res.status(401).json('Invalid access token');
+        throw new ApiError('Invalid access token', 401);
     }
 
 };

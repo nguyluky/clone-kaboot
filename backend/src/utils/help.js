@@ -35,7 +35,7 @@ import { CAU_HOI_ROUTES, CANVA_ROUTES, SESSION_ROUTES, PLAYER_ROUTES } from '../
 
 /**
  * @template {string} P - Mẫu đường dẫn route
- * @typedef {import('express-serve-static-core').RouteParameters<P>} RouteParameters
+ * @typedef {import('./help.d.ts').RouteParameters<P>} RouteParameters
  */
 
 /**
@@ -45,21 +45,6 @@ import { CAU_HOI_ROUTES, CANVA_ROUTES, SESSION_ROUTES, PLAYER_ROUTES } from '../
  */
 
 /** @typedef {import('mysql2').ResultSetHeader} ResultSetHeader */
-
-//--------------------------------------------------------------------------
-// Kiểu dữ liệu model
-//--------------------------------------------------------------------------
-
-/** @typedef {import('../model/CauHoiModel.js').CauHoiWithLuaChonType} CauHoiWithLuaChonType */
-/** @typedef {import('../model/canvaModel.js').CanvaType} CanvaType */
-/** @typedef {import('../model/SessionModel.js').SessionType} SessionType */
-/** @typedef {import('../model/CauHoiModel.js').CauHoiType} CauHoiType */
-
-//--------------------------------------------------------------------------
-// Route types
-//--------------------------------------------------------------------------
-
-/** @typedef {typeof CAU_HOI_ROUTES[keyof typeof CAU_HOI_ROUTES]} CauHoiRoute */
 
 //--------------------------------------------------------------------------
 // Controller interfaces
@@ -85,14 +70,14 @@ import { CAU_HOI_ROUTES, CANVA_ROUTES, SESSION_ROUTES, PLAYER_ROUTES } from '../
  * @property {ApiHandler<
  *   RouteParameters<CAU_HOI_ROUTES['BASE']>,
  *   any,
- *   import('../model/CauHoiModel.js').CauHoiType,
+ *   CauHoiType,
  *   ResultSetHeader
  * >} createCauHoi - Tạo câu hỏi mới
  * 
  * @property {ApiHandler<
  *   RouteParameters<CAU_HOI_ROUTES['BY_ID']>,
  *   any,
- *   Partial<import('../model/CauHoiModel.js').CauHoiType>,
+ *   Partial<CauHoiType>,
  *   ResultSetHeader
  * >} updateCauHoi - Cập nhật câu hỏi
  * 
@@ -199,7 +184,7 @@ import { CAU_HOI_ROUTES, CANVA_ROUTES, SESSION_ROUTES, PLAYER_ROUTES } from '../
  *   RouteParameters<SESSION_ROUTES['LEADERBOARD']>,
  *   any,
  *   any,
- *   import('../model/PlayerModel.js').PlayerType[]
+ *   PlayerType[]
  * >} getLeaderBoard - Lấy bảng xếp hạng
  * 
  * @property {ApiHandler<
@@ -238,27 +223,27 @@ import { CAU_HOI_ROUTES, CANVA_ROUTES, SESSION_ROUTES, PLAYER_ROUTES } from '../
  *   RouteParameters<PLAYER_ROUTES['BASE']>,
  *   any,
  *   any,
- *   import('../model/PlayerModel.js').PlayerType[]
+ *   PlayerType[]
  * >} getAllPlayers - Lấy tất cả người chơi
  * 
  * @property {ApiHandler<
  *   RouteParameters<PLAYER_ROUTES['BY_ID']>,
  *   any,
  *   any,
- *   import('../model/PlayerModel.js').PlayerType
+ *   PlayerType
  * >} getPlayerById - Lấy người chơi theo ID
  * 
  * @property {ApiHandler<
  *   RouteParameters<PLAYER_ROUTES['BASE']>,
  *   any,
- *   import('../model/PlayerModel.js').PlayerType,
+ *   PlayerType,
  *   ResultSetHeader
  * >} createPlayer - Tạo người chơi mới
  * 
  * @property {ApiHandler<
  *   RouteParameters<PLAYER_ROUTES['BY_ID']>,
  *   any,
- *   Partial<import('../model/PlayerModel.js').PlayerType>,
+ *   Partial<PlayerType>,
  *   ResultSetHeader
  * >} updatePlayer - Cập nhật người chơi
  * 

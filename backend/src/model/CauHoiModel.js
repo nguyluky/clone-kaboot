@@ -1,41 +1,8 @@
 // src/model/CauHoiModel.js
-/*
- * 17/03/25 [nguyluky] Note:
- * đừng quan tậm về cái này
- * chỉ là để vscode hiểu kiểu dữ liệu thôi
- * tôi không có nhớ nên phải khai bá cho đỡ sai
- */
-
 import pool from '../config/database.js';
 import BaseModel from './BaseModel.js';
 
-
-/**
- * @typedef {import('mysql2').ResultSetHeader} ResultSetHeader
- * 
- * @typedef {Object} LuaChonType
- * @property {number} lua_chon_id - ID của lựa chọn
- * @property {number} cau_hoi_id - ID của câu hỏi
- * @property {string} noi_dung - Nội dung lựa chọn
- * @property {boolean} dung
- * 
- * @typedef {'htmldecode' | 'markdown'} CauHoi_DinhDangType
- * 
- * @typedef {Object} CauHoiType
- * @property {number} cau_hoi_id - ID của câu hỏi
- * @property {number} canva_id - ID của bảng câu hỏi
- * @property {string} noi_dung - Nội dung câu hỏi
- * @property {CauHoi_DinhDangType} dinh_dang - Định dạng câu hỏi
- * @property {number} thoi_gian - Thời gian trả lời câu hỏi, NOTE: khong dung
- * 
- * @typedef {CauHoiType & {lua_chon: LuaChonType[]}} CauHoiWithLuaChonType
- */
-
-//===========================================================
-
-/**
- * @extends {BaseModel<CauHoiType, 'cau_hoi_id'>}
- */
+/** @extends {BaseModel<CauHoiType, 'cau_hoi_id'>} */
 class CauHoiModel extends BaseModel {
     constructor() {
         super('cau_hoi', 'cau_hoi_id');
