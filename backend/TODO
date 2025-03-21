@@ -1,0 +1,3 @@
+- [x] router player chưa cấu trúc chưa được hợp lý lăm
+- [x] Lỗi error "ER_PARSE_EROR" ở file playrmodule
+- [ ] test bị lỗi khi chưa đăng nhập
