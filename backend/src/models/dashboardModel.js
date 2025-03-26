@@ -50,6 +50,35 @@ class DashboardModel {
             throw error;
         }
     }
+
+    async getQuizPopular(limit = 5) {
+        try {
+            const [canvases] = await db.query(`
+            SELECT c.id, c.title, c.category, c.description, c.lastModified, c.created, 
+                COUNT(DISTINCT q.id) as questions,
+                COUNT(DISTINCT s.id) as timesPlayed,
+                COUNT(DISTINCT p.id) as totalParticipants
+            FROM Canva c
+            LEFT JOIN Question q ON q.canva_id = c.id
+            LEFT JOIN Session s ON s.canva_id = c.id
+            LEFT JOIN Player p ON p.session_id = s.id
+            GROUP BY c.id
+            ORDER BY totalParticipants DESC, timesPlayed DESC
+            LIMIT ?
+        `, [limit]);
+
+            // Add stats for each canvas
+            for (const canvas of canvases) {
+                const stats = await canvaModel.getCanvaStats(canvas.id);
+                canvas.stats = stats;
+            }
+
+            return canvases;
+        } catch (error) {
+            console.error('Error getting popular quizzes:', error);
+            throw error;
+        }
+    }
 }
 
 module.exports = new DashboardModel();

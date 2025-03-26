@@ -5,8 +5,8 @@ process.env.DB_NAME = 'clone_kaboot_test';
 // Increase test timeout for database operations
 jest.setTimeout(15000);
 
-// Mock the database connection
-jest.mock('../config/db', () => {
+// Mock the database connection - Updated path to reflect new structure
+jest.mock('../src/config/db', () => {
     // Create mock functions
     const mockQuery = jest.fn();
 

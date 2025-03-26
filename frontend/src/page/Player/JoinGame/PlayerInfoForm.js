@@ -1,36 +1,92 @@
-import React , {useState} from 'react';
-import { useSearchParams } from 'react-router';
+import React, { useState, useEffect } from 'react';
 
-export default function PlayerInfoForm({addPlayer , canvas}) {
-    const [searchParams] = useSearchParams();
+export default function PlayerInfoForm({ addPlayer, initialCode = '', codeReadOnly = false }) {
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        sdt: '',
+        code: initialCode || '',
+    });
 
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [std, setStd] = useState('');
-    const [subject, setSubject] = useState('0');
+    useEffect(() => {
+        // Update code when initialCode prop changes
+        setFormData(prev => ({
+            ...prev,
+            code: initialCode || ''
+        }));
+    }, [initialCode]);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const { name, email, sdt, code } = formData;
+        addPlayer(name, email, sdt, code);
+    };
 
     return (
-        <>
-        <form onSubmit={(e) => { e.preventDefault(); addPlayer(name, email, std, subject); }}>
-            <input type='text' required value={name} onChange={e => setName(e.target.value)} placeholder='Name' />
-            <br />
-            <input type='email' required pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$' value={email} onChange={e => setEmail(e.target.value)} placeholder='Email' />
-            <br />
-            <input type='text' required pattern='[^a-z0-9A-Z_\x{00C0}-\x{00FF}\x{1EA0}-\x{1EFF}]' value={std} onChange={e => setStd(e.target.value)} placeholder='Std' />
-            <br />
-            {
-                !searchParams.get('code') && 
-            <select onChange={e => setSubject(e.target.value)} value={subject}>
-                <option value='0' defaultChecked>Bạn muốn làm gì </option>
-                {
-                    canvas.map((item, index) => (
-                        <option key={index} value={item.code_join}>{item.title}</option>
-                    ))
-                }
-            </select>
-            }
-            <button type='submit'>Start Game</button>
+        <form className="player-info-form" onSubmit={handleSubmit}>
+            <div className="form-group">
+                <label htmlFor="name">Your Name *</label>
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="Enter your name"
+                    required
+                />
+            </div>
+
+            <div className="form-group">
+                <label htmlFor="email">Email</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="Enter your email"
+                />
+            </div>
+
+            <div className="form-group">
+                <label htmlFor="sdt">Phone Number</label>
+                <input
+                    type="tel"
+                    id="sdt"
+                    name="sdt"
+                    value={formData.sdt}
+                    onChange={handleChange}
+                    placeholder="Enter your phone number"
+                />
+            </div>
+
+            <div className="form-group">
+                <label htmlFor="code">Game Code {codeReadOnly && '(Selected Quiz)'}</label>
+                <input
+                    type="text"
+                    id="code"
+                    name="code"
+                    value={formData.code}
+                    onChange={handleChange}
+                    placeholder="Enter game code"
+                    readOnly={codeReadOnly}
+                    className={codeReadOnly ? 'readonly' : ''}
+                    required
+                />
+            </div>
+
+            <button type="submit" className="join-button">
+                Join Game
+            </button>
         </form>
-        </>
     );
 }

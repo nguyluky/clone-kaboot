@@ -80,7 +80,7 @@ class PlayerController {
         try {
             const { player_id, answers } = req.body;
 
-            if (!player_id || !answers || !Array.isArray(answers) || answers.length === 0) {
+            if (!player_id || !answers || !Array.isArray(answers)) {
                 return res.status(400).json({ message: 'Missing required fields' });
             }
 
@@ -97,14 +97,14 @@ class PlayerController {
             await playerModel.checkoutPlayer(player_id);
 
             // Calculate score and details
-            const playerDetails = await playerModel.getPlayerDetail(player_id);
+            // const playerDetails = await playerModel.getPlayerDetail(player_id);
 
             res.status(201).json({
                 message: 'All answers submitted successfully',
-                answersProcessed: results.length,
-                score: playerDetails.score,
-                correctAnswers: playerDetails.correctAnswers,
-                incorrectAnswers: playerDetails.incorrectAnswers
+                // answersProcessed: results.length,
+                // score: playerDetails.score,
+                // correctAnswers: playerDetails.correctAnswers,
+                // incorrectAnswers: playerDetails.incorrectAnswers
             });
         } catch (error) {
             console.error('Error in submitAllAnswers controller:', error);

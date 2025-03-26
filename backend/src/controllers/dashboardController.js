@@ -21,6 +21,17 @@ class DashboardController {
             res.status(500).json({ message: 'Internal server error' });
         }
     }
+
+    async getQuizPopular(req, res) {
+        try {
+            const limit = req.query.limit ? parseInt(req.query.limit) : 10;
+            const popularQuizzes = await dashboardModel.getQuizPopular(limit);
+            res.status(200).json(popularQuizzes);
+        } catch (error) {
+            console.error('Error in getQuizPopular controller:', error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    }
 }
 
 module.exports = new DashboardController();

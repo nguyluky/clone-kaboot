@@ -12,4 +12,6 @@ router.get('/stats', dashboardController.getDashboardStats);
 // Get recent activities
 router.get('/activities', dashboardController.getRecentActivities);
 
+router.get('/quiz_popular', dashboardController.getQuizPopular);
+
 module.exports = router;

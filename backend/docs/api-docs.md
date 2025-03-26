@@ -842,6 +842,42 @@ Tất cả các API sử dụng định dạng JSON cho dữ liệu request và 
 ]
 ```
 
+### Lấy bài kiểm tra phổ biến
+
+**Endpoint:** `GET /dashboard/quiz_popular`  
+**Description:** Lấy danh sách các bài kiểm tra phổ biến nhất dựa trên số lượng người tham gia.
+
+**Query Parameters:**
+| Tên | Mô tả | Mặc định |
+|-----|-------|----------|
+| limit | Số lượng bài kiểm tra tối đa | 5 |
+
+**Response:**
+
+```json
+[
+  {
+    "id": 1,
+    "title": "Kiến thức Lập trình cơ bản",
+    "category": "Technology",
+    "description": "Kiểm tra kiến thức về các khái niệm lập trình cơ bản",
+    "lastModified": "2023-08-15T10:30:00",
+    "created": "2023-08-10T14:22:00",
+    "questions": 5,
+    "timesPlayed": 10,
+    "totalParticipants": 50,
+    "stats": {
+      "timesPlayed": 10,
+      "totalParticipants": 50,
+      "avgScore": 72.5,
+      "completionRate": 88.9,
+      "difficultyRating": "Medium"
+    }
+  }
+  // ...other popular quizzes
+]
+```
+
 ## Authentication API
 
 ### Kiểm tra Token

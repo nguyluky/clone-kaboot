@@ -1,14 +1,21 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
 import './Dashboard.css';
-import api from '../../../../services/fakeApi';
 import Loading from '../../../../components/common/Loading';
 import Error from '../../../../components/common/Error';
+import api from '../../../../services/apiService';
+import { formatDateTime } from '../../../../help';
 
 export default function Dashboard() {
     const navigate = useNavigate();
+    /** @type {import('../../../../help').useStateReturnType<import('../../../../services/apiService').Activity[]>} */
+    // @ts-ignore
     const [recentActivities, setRecentActivities] = React.useState([]);
+    /** @type {import('../../../../help').useStateReturnType<import('../../../../services/apiService').Canvas[]>} */
+    // @ts-ignore
     const [popularQuizzes, setPopularQuizzes] = React.useState([]);
+    /** @type {import('../../../../help').useStateReturnType<import('../../../../services/apiService').DashboardStats>} */
+    // @ts-ignore
     const [stats, setStats] = React.useState({});
     const [isLoading, setIsLoading] = React.useState(true);
     const [error, setError] = React.useState(null);
@@ -16,11 +23,11 @@ export default function Dashboard() {
     const loadData = () => {
         setIsLoading(true);
         setError(null);
-        
+
         Promise.all([
-            api.getRecentActivities(),
-            api.getPopularQuizzes(),
-            api.getStats()
+            api.dashboard.getActivities(),
+            api.dashboard.getQuizPopular(),
+            api.dashboard.getStats()
         ]).then(([
             activities,
             popularQuizzes,
@@ -165,7 +172,7 @@ export default function Dashboard() {
                                     <p>{getActivityDescription(activity)}</p>
                                 </div>
                                 <div className="activity-date">
-                                    {activity.date}
+                                    {formatDateTime('MMM DD, YYYY', new Date(String(activity.date)))}
                                 </div>
                             </div>
                         ))}
@@ -184,10 +191,10 @@ export default function Dashboard() {
                                 <div className="popular-quiz-card" key={quiz.id}>
                                     <div className="popular-quiz-info">
                                         <h4>{quiz.title}</h4>
-                                        <p>{quiz.participants} participants • {quiz.avgScore}% avg. score</p>
+                                        <p>{quiz.stats.totalParticipants} participants • {quiz.stats.avgScore}% avg. score</p>
                                     </div>
                                     <div className="popular-quiz-plays">
-                                        <span className="plays-count">{quiz.plays}</span>
+                                        <span className="plays-count">{quiz.stats.timesPlayed}</span>
                                         <span className="plays-label">plays</span>
                                     </div>
                                 </div>

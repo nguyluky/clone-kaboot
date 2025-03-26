@@ -78,7 +78,7 @@ class PlayerModel {
 
             // Get player rank
             const [rankData] = await db.query(`
-        SELECT COUNT(*) + 1 as rank
+        SELECT COUNT(*) + 1 as \`rank\`
         FROM Player p2
         JOIN Session s ON p2.session_id = s.id
         WHERE s.id = ? AND (

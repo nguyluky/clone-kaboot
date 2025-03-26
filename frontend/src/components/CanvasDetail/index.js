@@ -1,18 +1,21 @@
-import React, { useState , useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import './CanvasDetail.css';
 import { useNavigate, useParams } from 'react-router';
-import api from '../../services/fakeApi.js';
+import api from '../../services/apiService';
+import { formatDateTime } from '../../help';
 
 
 export default function CanvasDetail() {
+    const { id } = useParams();
     const [activeTab, setActiveTab] = useState('overview');
-    const [sampleCanvas, setSampleCanvas] = useState();
+    /** @type {useStateReturnType<import('../../services/apiService').CanvasDetail>} */
+    const [Canvas, setCanvas] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
-    const { id } = useParams();
 
     const handleStartSession = () => {
+        // TODO: bỏ trang này
         navigate(`/session/start/${id}`);
     };
 
@@ -23,12 +26,13 @@ export default function CanvasDetail() {
     const handleShareCanvas = () => {
         // In a real app, this would show a share dialog
         alert('Share functionality would be implemented here');
+        // TODO: bỏ trang này
     };
 
     useEffect(() => {
-        api.getCanvas().then(a => {
+        api.canvas.getCanvasDetail(id || '').then(a => {
             console.log(a)
-            setSampleCanvas(a);
+            setCanvas(a);
         }).catch((e) => {
             setError(e)
         }).finally(() => setLoading(false));
@@ -64,10 +68,10 @@ export default function CanvasDetail() {
         <div className="canvas-detail-container">
             <div className="canvas-detail-header">
                 <div className="canvas-detail-title">
-                    <span className="canvas-category">{sampleCanvas.category}</span>
-                    <h1>{sampleCanvas.title}</h1>
+                    <span className="canvas-category">{Canvas.category}</span>
+                    <h1>{Canvas.title}</h1>
                     <p className="canvas-detail-meta">
-                        Created by {sampleCanvas.createdBy} • Last modified: {sampleCanvas.lastModified}
+                        Created by ADMIN • Last modified: {formatDateTime('MMM DD, YYYY • hh:mm A', new Date(Canvas.lastModified))}
                     </p>
                 </div>
                 <div className="canvas-detail-actions">
@@ -94,7 +98,7 @@ export default function CanvasDetail() {
                     className={`tab-button ${activeTab === 'questions' ? 'active' : ''}`}
                     onClick={() => setActiveTab('questions')}
                 >
-                    <i className="fas fa-question-circle"></i> Questions ({sampleCanvas.questions.length})
+                    <i className="fas fa-question-circle"></i> Questions ({Canvas.questions.length})
                 </button>
                 <button
                     className={`tab-button ${activeTab === 'stats' ? 'active' : ''}`}
@@ -115,7 +119,7 @@ export default function CanvasDetail() {
                     <div className="canvas-overview">
                         <div className="overview-section">
                             <h3>Description</h3>
-                            <p>{sampleCanvas.description}</p>
+                            <p>{Canvas.description}</p>
                         </div>
 
                         <div className="overview-cards">
@@ -124,7 +128,7 @@ export default function CanvasDetail() {
                                     <i className="fas fa-question"></i>
                                 </div>
                                 <div className="overview-info">
-                                    <h4>{sampleCanvas.questions.length}</h4>
+                                    <h4>{Canvas.questions.length}</h4>
                                     <p>Questions</p>
                                 </div>
                             </div>
@@ -134,7 +138,7 @@ export default function CanvasDetail() {
                                     <i className="fas fa-trophy"></i>
                                 </div>
                                 <div className="overview-info">
-                                    <h4>{sampleCanvas.stats.avgScore}%</h4>
+                                    <h4>{Canvas.stats.avgScore}%</h4>
                                     <p>Avg. Score</p>
                                 </div>
                             </div>
@@ -144,7 +148,7 @@ export default function CanvasDetail() {
                                     <i className="fas fa-users"></i>
                                 </div>
                                 <div className="overview-info">
-                                    <h4>{sampleCanvas.stats.totalParticipants}</h4>
+                                    <h4>{Canvas.stats.totalParticipants}</h4>
                                     <p>Participants</p>
                                 </div>
                             </div>
@@ -154,7 +158,7 @@ export default function CanvasDetail() {
                                     <i className="fas fa-clock"></i>
                                 </div>
                                 <div className="overview-info">
-                                    <h4>~{sampleCanvas.questions.reduce((sum, q) => sum + q.timeLimit, 0) / 60} min</h4>
+                                    <h4>~{(Canvas.questions.reduce((sum, q) => sum + q.timeLimit, 0) / 60).toFixed(2)} min</h4>
                                     <p>Duration</p>
                                 </div>
                             </div>
@@ -179,7 +183,7 @@ export default function CanvasDetail() {
                     <div className="canvas-questions">
                         <div className="questions-header">
                             <div className="questions-count">
-                                {sampleCanvas.questions.length} Questions
+                                {Canvas.questions.length} Questions
                             </div>
                             <button className="add-question-btn">
                                 <i className="fas fa-plus"></i> Add Question
@@ -187,7 +191,7 @@ export default function CanvasDetail() {
                         </div>
 
                         <div className="question-list">
-                            {sampleCanvas.questions.map((question, index) => (
+                            {Canvas.questions.map((question, index) => (
                                 <div className="question-card" key={question.id}>
                                     <div className="question-number">{index + 1}</div>
                                     <div className="question-content">
@@ -200,11 +204,11 @@ export default function CanvasDetail() {
                                             </div>
                                         </div>
                                         <div className="question-options">
-                                            {question.options.map(option => (
-                                                <div className={`option ${option.id === question.correctAnswer ? 'correct' : ''}`} key={option.id}>
-                                                    <span className="option-letter">{option.id.toUpperCase()}</span>
+                                            {question.options.map((option, index) => (
+                                                <div className={`option ${option.isCorrect ? 'correct' : ''}`} key={option.id}>
+                                                    <span className="option-letter">{'ABCD'.charAt(index).toUpperCase()}</span>
                                                     <span className="option-text">{option.text}</span>
-                                                    {option.id === question.correctAnswer && (
+                                                    {option.isCorrect && (
                                                         <span className="correct-indicator">
                                                             <i className="fas fa-check"></i>
                                                         </span>
@@ -229,27 +233,27 @@ export default function CanvasDetail() {
                         <div className="stats-cards">
                             <div className="stats-card">
                                 <h3>Times Played</h3>
-                                <div className="stats-value">{sampleCanvas.stats.timesPlayed}</div>
+                                <div className="stats-value">{Canvas.stats.timesPlayed}</div>
                             </div>
 
                             <div className="stats-card">
                                 <h3>Total Participants</h3>
-                                <div className="stats-value">{sampleCanvas.stats.totalParticipants}</div>
+                                <div className="stats-value">{Canvas.stats.totalParticipants}</div>
                             </div>
 
                             <div className="stats-card">
                                 <h3>Average Score</h3>
-                                <div className="stats-value">{sampleCanvas.stats.avgScore}%</div>
+                                <div className="stats-value">{Canvas.stats.avgScore}%</div>
                             </div>
 
                             <div className="stats-card">
                                 <h3>Completion Rate</h3>
-                                <div className="stats-value">{sampleCanvas.stats.completionRate}%</div>
+                                <div className="stats-value">{Canvas.stats.completionRate}%</div>
                             </div>
 
                             <div className="stats-card">
                                 <h3>Difficulty Rating</h3>
-                                <div className="stats-value">{sampleCanvas.stats.difficultyRating}</div>
+                                <div className="stats-value">{Canvas.stats.difficultyRating}</div>
                             </div>
                         </div>
 
@@ -281,12 +285,12 @@ export default function CanvasDetail() {
                             <h3>General Settings</h3>
                             <div className="setting-item">
                                 <label>Canvas Title</label>
-                                <input type="text" value={sampleCanvas.title} />
+                                <input type="text" value={Canvas.title} />
                             </div>
 
                             <div className="setting-item">
                                 <label>Category</label>
-                                <select defaultValue={sampleCanvas.category}>
+                                <select defaultValue={Canvas.category}>
                                     <option>Business</option>
                                     <option>Education</option>
                                     <option>Entertainment</option>
@@ -296,7 +300,7 @@ export default function CanvasDetail() {
 
                             <div className="setting-item">
                                 <label>Description</label>
-                                <textarea defaultValue={sampleCanvas.description}></textarea>
+                                <textarea defaultValue={Canvas.description}></textarea>
                             </div>
                         </div>
 

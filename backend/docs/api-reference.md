@@ -795,6 +795,39 @@ GET /api/dashboard/activities?limit=5
 ]
 ```
 
+### GET /api/dashboard/quiz_popular
+
+Lấy danh sách các bài kiểm tra phổ biến nhất dựa trên số lượng người tham gia.
+
+```http
+GET /api/dashboard/quiz_popular?limit=5
+```
+
+**Response:**
+
+```json
+[
+  {
+    "id": 1,
+    "title": "Kiến thức Lập trình cơ bản",
+    "category": "Technology",
+    "description": "Kiểm tra kiến thức về các khái niệm lập trình cơ bản",
+    "lastModified": "2023-08-15T10:30:00",
+    "created": "2023-08-10T14:22:00",
+    "questions": 5,
+    "timesPlayed": 10,
+    "totalParticipants": 50,
+    "stats": {
+      "timesPlayed": 10,
+      "totalParticipants": 50,
+      "avgScore": 72.5,
+      "completionRate": 88.9,
+      "difficultyRating": "Medium"
+    }
+  }
+]
+```
+
 ## Authentication API
 
 ### POST /api/auth/check-token

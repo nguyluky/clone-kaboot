@@ -17,30 +17,30 @@ import SessionLobby from './page/Host/SessionLobby';
 import Error from './components/common/Error';
 
 function App() {
-  return (
-    <Routes>
-      <Route path='/' element={<JoinGame />}/>
-      <Route path='/play' element={<Play/>}/>
+    return (
+        <Routes>
+            <Route path='/' element={<JoinGame />} />
+            <Route path='/play' element={<Play />} />
 
-      <Route path='/admin' element={<Admin />}>
-        <Route path='' element={<Dashboard />}/>
-        <Route path='dashboard' element={<Dashboard />}/>
-        <Route path='quizzes' element={<CanvasList />}/>
-        <Route path='canva/:id' element={<CanvasDetails/>}/>
-        <Route path='report' element={<SessionList/>}/>
-        <Route path='report/:id' element={<SessionReportDetail/>}/>
-        <Route path='report/:sessionId/participant/:participantId' element={<ParticipantReportDetail/>}/>
-        <Route path='*' element={Error({title: 'Not Found', message: 'The page you are looking for does not exist', onBack: () => {}})}/>
-      </Route>
-      <Route path='/canva/new' element={<CanvaEdit />}/>
-      <Route path='/canva/edit/:id' element={<CanvaEdit />}/>
-      <Route path='/session/start/:canvasId' element={<SessionStart />}/>
-      <Route path='/host/lobby/:sessionId' element={<SessionLobby />}/>
-      <Route path='/host/:session_id' element={<Host/>}/>
-      {/* <Route path='/host/:session_id/leaderboard' element={<PlayerScoreboard/>}/> */}
-      <Route path='*' element={<h1>Not Found</h1>}/>
-    </Routes>
-  );
+            <Route path='/admin' element={<Admin />}>
+                <Route path='' element={<Dashboard />} />
+                <Route path='dashboard' element={<Dashboard />} />
+                <Route path='quizzes' element={<CanvasList />} />
+                <Route path='canva/:id' element={<CanvasDetails />} />
+                <Route path='report' element={<SessionList />} />
+                <Route path='report/:id' element={<SessionReportDetail />} />
+                <Route path='report/:sessionId/participant/:participantId' element={<ParticipantReportDetail />} />
+                <Route path='*' element={Error({ title: 'Not Found', message: 'The page you are looking for does not exist', onBack: () => { } })} />
+            </Route>
+            <Route path='/canva/new' element={<CanvaEdit />} />
+            <Route path='/canva/edit/:id' element={<CanvaEdit />} />
+            <Route path='/session/start/:canvasId' element={<SessionStart />} />
+            <Route path='/host/lobby/:sessionId' element={<SessionLobby />} />
+            <Route path='/host/:session_id' element={<Host />} />
+            {/* <Route path='/host/:session_id/leaderboard' element={<PlayerScoreboard/>}/> */}
+            <Route path='*' element={<h1>Not Found</h1>} />
+        </Routes>
+    );
 }
 
 export default App;
