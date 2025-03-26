@@ -1,75 +1,414 @@
 @import url('https://fonts.googleapis.com/css2?family=Sigmar&display=swap');
 
 .join-game {
-    height: 100%;
-
+    position: relative;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
+    background: #051937;
+    overflow: hidden;
+    padding: 20px;
 }
 
 .join-game__logo {
     position: absolute;
-    top: 30px;
-    left: 30px;
-    height: 50px;
+    top: 20px;
+    left: 20px;
+    width: 150px;
+    z-index: 10;
 }
 
 .join-game__wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
-    width: calc(100vw - 50px);
-    max-width: 400px;
+    position: relative;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    padding: 30px;
+    width: 100%;
+    max-width: 800px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    z-index: 5;
 }
 
-.join-game__wrapper .join-game__title {
+.join-game__title {
     text-align: center;
     margin-bottom: 20px;
-    color: #efefef;
 }
 
-.join-game__wrapper .join-game__title h2 {
-    font-family: "Sigmar", sans-serif;
-    font-size: 3rem;
-    font-weight: 400;
-    font-style: normal;
+.join-game__title h2 {
+    color: #051937;
+    font-size: 2.2rem;
+    margin-bottom: 5px;
 }
 
-.join-game__wrapper form {
+.join-game__title p {
+    color: #555;
+    font-size: 1rem;
+}
+
+.join-game__tabs {
+    display: flex;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #ddd;
+}
+
+.tab-button {
+    flex: 1;
+    background: none;
+    border: none;
+    padding: 15px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #777;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+}
+
+.tab-button:hover {
+    color: #051937;
+}
+
+.tab-button.active {
+    color: #051937;
+}
+
+.tab-button.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
     width: 100%;
+    height: 3px;
+    background-color: #051937;
+}
+
+/* Code Tab Styles */
+.join-game__code-tab {
+    animation: fadeIn 0.5s;
+}
+
+.selected-session-info {
+    background-color: #f0f7ff;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border-left: 4px solid #3498db;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.selected-session-info h3 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.1rem;
+}
+
+.clear-selection-btn {
+    background-color: transparent;
+    border: none;
+    color: #3498db;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 0.9rem;
+}
+
+/* Public Sessions Tab Styles */
+.join-game__public-tab {
+    animation: fadeIn 0.5s;
+}
+
+.join-game__public-tab h3 {
+    color: #2c3e50;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.3rem;
+    text-align: center;
+}
+
+.loading-sessions {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 30px;
+    color: #777;
 }
 
-.join-game__wrapper form input{
-    width: 100%;
+.public-sessions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 10px;
 }
 
-.join-game__loading {
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    background: rgba(0, 0, 0, 0.5);
+.session-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    border: 1px solid #e0e0e0;
+}
+
+.session-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 7px 10px rgba(0, 0, 0, 0.15);
+}
+
+.session-card-header {
+    background-color: #051937;
+    color: white;
+    padding: 15px;
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.session-card-header h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 180px;
+}
+
+.participants-badge {
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+}
+
+.session-card-body {
+    padding: 15px;
+    color: #555;
+}
+
+.quiz-name {
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #2c3e50;
+}
+
+.created-date {
+    font-size: 0.8rem;
+    margin: 0;
+    color: #777;
+}
+
+.session-card-footer {
+    padding: 0 15px 15px;
+    text-align: right;
+}
+
+.join-session-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.join-session-btn:hover {
+    background-color: #2980b9;
+}
+
+.no-sessions-message {
+    text-align: center;
+    padding: 40px 20px;
+    color: #777;
+}
+
+.refresh-button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 6px;
+    margin-top: 15px;
+    cursor: pointer;
+}
+
+/* Player Info Form Styles */
+.player-info-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #555;
+}
+
+.form-group input {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.form-group input.readonly {
+    background-color: #f8f9fa;
+    border-color: #3498db;
+}
+
+.join-button {
+    background-color: #051937;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+.join-button:hover {
+    background-color: #0a2a5a;
+}
+
+/* Loading Indicator */
+.join-game__loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    z-index: 100;
+    z-index: 9999;
+    color: white;
 }
 
-.join-game__wrapper form select {
-    width: 100%;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #efefef;
-    background: #efefef;
-    color: #333;
-    font-size: 1rem;
-    margin-bottom: 20px;
+.lds-dual-ring {
+    display: inline-block;
+    width: 80px;
+    height: 80px;
 }
 
-.join-game__wrapper form button {
-    width: 100%;
+.lds-dual-ring:after {
+    content: " ";
+    display: block;
+    width: 64px;
+    height: 64px;
+    margin: 8px;
+    border-radius: 50%;
+    border: 6px solid #fff;
+    border-color: #fff transparent #fff transparent;
+    animation: lds-dual-ring 1.2s linear infinite;
+}
+
+.lds-ripple {
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+
+.lds-ripple div {
+    position: absolute;
+    border: 4px solid #3498db;
+    opacity: 1;
+    border-radius: 50%;
+    animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
+.lds-ripple div:nth-child(2) {
+    animation-delay: -0.5s;
+}
+
+@keyframes lds-dual-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes lds-ripple {
+    0% {
+        top: 36px;
+        left: 36px;
+        width: 0;
+        height: 0;
+        opacity: 0;
+    }
+
+    4.9% {
+        top: 36px;
+        left: 36px;
+        width: 0;
+        height: 0;
+        opacity: 0;
+    }
+
+    5% {
+        top: 36px;
+        left: 36px;
+        width: 0;
+        height: 0;
+        opacity: 1;
+    }
+
+    100% {
+        top: 0px;
+        left: 0px;
+        width: 72px;
+        height: 72px;
+        opacity: 0;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .join-game__wrapper {
+        padding: 20px;
+    }
+
+    .public-sessions-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .join-game__title h2 {
+        font-size: 1.8rem;
+    }
 }
