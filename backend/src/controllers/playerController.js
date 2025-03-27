@@ -6,7 +6,7 @@ class PlayerController {
         try {
             const { name, sdt, email, session_id } = req.body;
 
-            if (!name || !session_id || !std || !email) {
+            if (!name || !session_id || !sdt || !email) {
                 return res.status(400).json({ message: 'Missing required fields' });
             }
 
