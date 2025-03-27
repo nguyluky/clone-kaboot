@@ -36,6 +36,29 @@
   background-color: #2980b9;
 }
 
+.header-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.upload-xls-btn {
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.3s;
+}
+
+.upload-xls-btn:hover {
+  background-color: #219653;
+}
+
 .canvas-filters {
   display: flex;
   gap: 15px;

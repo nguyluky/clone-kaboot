@@ -15,6 +15,7 @@ import ParticipantReportDetail from './page/Host/Admin/ParticipantReportDetail';
 import SessionStart from './page/Host/SessionStart';
 import SessionLobby from './page/Host/SessionLobby';
 import Error from './components/common/Error';
+import CompletionMessage from './page/Player/Play/CompletionMessage';
 
 function App() {
     return (
@@ -37,6 +38,7 @@ function App() {
             <Route path='/session/start/:canvasId' element={<SessionStart />} />
             <Route path='/host/lobby/:sessionId' element={<SessionLobby />} />
             <Route path='/host/:session_id' element={<Host />} />
+            <Route path='/results' element={<CompletionMessage />} />
             {/* <Route path='/host/:session_id/leaderboard' element={<PlayerScoreboard/>}/> */}
             <Route path='*' element={<h1>Not Found</h1>} />
         </Routes>

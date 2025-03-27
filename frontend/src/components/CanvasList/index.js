@@ -14,9 +14,30 @@ export default function CanvasList() {
     const [canvases, setCanvases] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(true);
     const [error, setError] = React.useState(null);
+    const fileInputRef = React.useRef(null);
 
     const handleCreateCanvas = () => {
         navigate('/canva/new');
+    };
+
+    const handleUploadXls = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            // Handle the uploaded file here
+            console.log('File uploaded:', file);
+            // Reset the input so the same file can be uploaded again
+            event.target.value = '';
+            
+            // Implement actual file upload logic here
+            // For example:
+            // const formData = new FormData();
+            // formData.append('xlsFile', file);
+            // api.canvas.uploadXlsFile(formData).then(...);
+        }
     };
 
     const handleEditCanvas = (id) => {
@@ -43,9 +64,21 @@ export default function CanvasList() {
         <div className="canvases-container">
             <div className="canvases-header">
                 <h2>My Canvases</h2>
-                <button className="create-canvas-btn" onClick={handleCreateCanvas}>
-                    <i className="fas fa-plus"></i> Create New Canvas
-                </button>
+                <div className="header-buttons">
+                    <button className="upload-xls-btn" onClick={handleUploadXls}>
+                        <i className="fas fa-file-upload"></i> Upload XLS
+                    </button>
+                    <input 
+                        type="file" 
+                        ref={fileInputRef} 
+                        style={{ display: 'none' }} 
+                        onChange={handleFileChange}
+                        accept=".xls,.xlsx" 
+                    />
+                    <button className="create-canvas-btn" onClick={handleCreateCanvas}>
+                        <i className="fas fa-plus"></i> Create New Canvas
+                    </button>
+                </div>
             </div>
 
             <div className="canvas-filters">

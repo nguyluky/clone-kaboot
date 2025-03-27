@@ -6,7 +6,7 @@ class PlayerController {
         try {
             const { name, sdt, email, session_id } = req.body;
 
-            if (!name || !session_id) {
+            if (!name || !session_id || !std || !email) {
                 return res.status(400).json({ message: 'Missing required fields' });
             }
 
@@ -19,8 +19,8 @@ class PlayerController {
 
             const playerId = await playerModel.createPlayer({
                 name,
-                sdt: sdt || '',
-                email: email || '',
+                sdt: sdt ,
+                email: email ,
                 session_id
             });
 
@@ -50,6 +50,7 @@ class PlayerController {
         }
     }
 
+    // not use
     async submitAnswer(req, res) {
         try {
             const { player_id, question_id, option_id, responseTime } = req.body;

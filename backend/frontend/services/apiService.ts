@@ -91,7 +91,8 @@ interface PlayerAnswer {
 interface AnswerSubmission {
   player_id: number;
   question_id: number;
-  option_id: number | null;
+  option_ids?: number[]; // Add support for multiple options
+  text_answer?: string;  // Add explicit support for text answers
   responseTime: number;
 }
 
@@ -207,8 +208,7 @@ interface ApiRequestOptions {
 }
 
 // Configure base URL for API calls
-const API_BASE_URL: string =
-  process.env.REACT_APP_API_URL || "http://localhost:3030/api";
+const API_BASE_URL: string = process.env.REACT_APP_API_URL || "http://localhost:3030/api";
 
 /**
  * Helper function to handle API requests

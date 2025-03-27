@@ -65,6 +65,7 @@ CREATE TABLE `Answers` (
     `player_id` INT NOT NULL,
     `question_id` INT NOT NULL,
     `option_id` INT,
+    `text_answer` TEXT DEFAULT NULL,
     `responseTime` INT NOT NULL,
     FOREIGN KEY (`player_id`) REFERENCES `Player`(`id`) ON DELETE CASCADE,
     FOREIGN KEY (`question_id`) REFERENCES `Question`(`id`) ON DELETE CASCADE,

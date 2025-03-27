@@ -63,10 +63,10 @@ class PlayerModel {
             // Get answers
             const [answers] = await db.query(`
         SELECT a.question_id as questionId, q.question as questionText, 
-        a.responseTime, q.point as points,
-        (SELECT o.text FROM Options o WHERE o.id = a.option_id) as participantAnswer,
-        (SELECT o.text FROM Options o WHERE o.question_id = q.id AND o.isCorrect = 1 LIMIT 1) as correctAnswer,
-        (SELECT o.isCorrect FROM Options o WHERE o.id = a.option_id) as isCorrect
+            a.responseTime, q.point as points,
+            (SELECT o.text FROM Options o WHERE o.id = a.option_id) as participantAnswer,
+            (SELECT o.text FROM Options o WHERE o.question_id = q.id AND o.isCorrect = 1 LIMIT 1) as correctAnswer,
+            (SELECT o.isCorrect FROM Options o WHERE o.id = a.option_id) as isCorrect
         FROM Answers a
         JOIN Question q ON a.question_id = q.id
         WHERE a.player_id = ?
@@ -78,7 +78,8 @@ class PlayerModel {
 
             // Get player rank
             const [rankData] = await db.query(`
-        SELECT COUNT(*) + 1 as \`rank\`
+        SELECT 
+            COUNT(*) + 1 as \`rank\`
         FROM Player p2
         JOIN Session s ON p2.session_id = s.id
         WHERE s.id = ? AND (
@@ -90,6 +91,7 @@ class PlayerModel {
            WHERE a2.player_id = ? AND o2.isCorrect = 1)
         )
       `, [player.session_id, id]);
+
 
             return {
                 id: player.id,
@@ -139,18 +141,43 @@ class PlayerModel {
             const results = [];
 
             for (const answer of answers) {
-                const { question_id, option_id, responseTime } = answer;
+                const { question_id, option_ids, responseTime, text_answer } = answer;
 
-                const [result] = await connection.query(
-                    'INSERT INTO Answers (player_id, question_id, option_id, responseTime) VALUES (?, ?, ?, ?)',
-                    [playerId, question_id, option_id, responseTime]
-                );
+                // nếu là câu điền thì kiểm tra xem text có giống không nếu giống thì inster Answers kèm opstion id là câu hỏi đúng
+                // NOTE: tại lười sửa logic nên làm theo cách này
+                if (text_answer) {
+                    const [question] = await connection.query('SELECT * FROM `Question` WHERE id = ?;', [question_id])
+                    if (question[0] && question[0].type != 'text') {
+                        throw new Error("Text answers are not allowed for multiple-choice questions.");
+                    }
 
-                results.push({
-                    id: result.insertId,
-                    question_id,
-                    responseTime
-                });
+                    const [options] = await connection.query('SELECT * FROM `Options` WHERE question_id = ?;', [question_id])
+
+                    const [result] = await connection.query(
+                            'INSERT INTO Answers (player_id, question_id, option_id, responseTime, text_answer) VALUES (?, ?, ?, ?, ?)',
+                            [playerId, question_id, (options[0] && text_answer == options[0].text) ? options[0].id : null, responseTime, text_answer]
+                        );
+                    results.push({
+                        id: result.insertId,
+                        question_id,
+                        responseTime
+                    });
+                    continue
+                }
+
+                for (const option_id of option_ids) {
+                    const [result] = await connection.query(
+                        'INSERT INTO Answers (player_id, question_id, option_id, responseTime) VALUES (?, ?, ?, ?)',
+                        [playerId, question_id, option_id, responseTime]
+                    );
+    
+                    results.push({
+                        id: result.insertId,
+                        question_id,
+                        responseTime
+                    });
+                }
+
             }
 
             await connection.commit();
